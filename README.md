@@ -300,6 +300,11 @@
   - **将来のSPA化を見据えた学習課題：** MVPリリース後、フロントエンドをReactに置き換える際には、トークンベースのAPI認証（`devise_token_auth` など）へ認証方式を移行する必要があります。そのため、初期設計時から将来の切り替えを頭の片隅に置きつつ、SPA化に向けたセキュリティ要件（トークンの安全な保持など）のキャッチアップを並行して進めることが今後の課題です。
 
 
-  ## 画面遷移図・UIデザイン
+  ## 11. 画面遷移図・UIデザイン
 
   - Figma: https://www.figma.com/design/Y6Up9ZhLKccGPYJFzuYuac/%E8%AA%B2%E9%87%91%E3%83%81%E3%82%A7%E3%83%83%E3%82%AB%E3%83%BC%E3%82%A2%E3%83%97%E3%83%AA%EF%BC%9A%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3?node-id=0-1&t=qrc3IOUCGVavEtw8-1
+
+  ## 12. データベース設計
+
+### ER図
+![課金チェッカー ER図](https://gyazo.com/345ffe332e861fc32123ccaba83347a9)
