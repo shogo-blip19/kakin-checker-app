@@ -21,7 +21,13 @@ RUN bundle install
 # アプリ本体をコピー
 COPY . .
 
+# 本番用にCSS/JSを事前にビルド（Tailwind CSSなど）
+# RAILS_ENV=production : 本番用の設定でビルドする（これを付けないとdevelopmentモードでビルドされてしまう）
+# SECRET_KEY_BASE_DUMMY=1 : master.key（秘密情報）が無い状態でもビルドできるようにする
+RUN RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 bin/rails assets:precompile
+
 EXPOSE 3000
 
-# デフォルトで実行するコマンド（compose.ymlで上書きします）
-CMD ["bin/rails", "server", "-b", "0.0.0.0"]
+# コンテナ起動時にDBのマイグレーションを実行してからRailsサーバーを起動
+# （compose.ymlで上書きされるので、ローカルのdocker composeでは実行されない）
+CMD ["sh", "-c", "bin/rails db:prepare && bin/rails server -b 0.0.0.0"]
