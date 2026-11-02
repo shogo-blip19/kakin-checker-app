@@ -71,3 +71,5 @@ group :test do
   gem "selenium-webdriver"
   gem "shoulda-matchers"
 end
+
+gem "rails-i18n", "~> 8.1"
