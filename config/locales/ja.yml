@@ -1,0 +1,18 @@
+ja:
+  top:
+    index:
+      catchphrase_line1: ガチャ結果に、後悔を残さない。
+      catchphrase_line2: 罪悪感なく、ソシャゲの課金ペースを整える
+      catchphrase_line3: “3タップ” 課金管理アプリ
+      start_app: アプリを始める
+      description_card: アプリの説明するカード
+      usage_card: アプリの操作イメージ
+  shared:
+    header:
+      logo: 課金チェッカー
+      sign_up: 新規登録
+      login: ログイン
+    footer:
+      terms: 利用規約
+      privacy: プライバシーポリシー
+      contact: お問い合わせ
