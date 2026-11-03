@@ -70,6 +70,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "shoulda-matchers"
+  gem "simplecov", require: false
 end
 
 gem "rails-i18n", "~> 8.1"
