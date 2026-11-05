@@ -307,4 +307,4 @@
   ## 12. データベース設計
 
 ### ER図
-![課金チェッカー ER図](https://gyazo.com/345ffe332e861fc32123ccaba83347a9)
+![課金チェッカー ER図](https://gyazo.com/9c1a666e1036e11edea04bb3c62ccf6c)
