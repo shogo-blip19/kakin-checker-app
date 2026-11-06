@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :preset_title do
-    user { nil }
-    game_title { "MyString" }
+    association :user
+    game_title { "タイトル" }
   end
 end
