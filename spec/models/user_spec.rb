@@ -4,12 +4,37 @@ RSpec.describe User, type: :model do
   describe "バリデーションのテスト" do
     it "正しい入力なら有効であること" do
       user = build(:user)
+
       expect(user).to be_valid
+    end
+
+    context "preset_titlesのバリデーション" do
+      it "preset_titlesが3つ未満の場合は無効であること" do
+        user = build(:user, preset_titles_count: 2)
+
+        expect(user).to be_invalid
+        expect(user.errors[:preset_titles]).to be_present
+      end
+
+      it "preset_titlesが4つ以上の場合は無効であること" do
+        user = build(:user, preset_titles_count: 4)
+
+        expect(user).to be_invalid
+        expect(user.errors[:preset_titles]).to be_present
+      end
+
+      it "preset_titlesが0の場合は無効であること" do
+        user = build(:user, preset_titles_count: 0)
+
+        expect(user).to be_invalid
+        expect(user.errors[:preset_titles]).to be_present
+      end
     end
 
     context "emailのバリデーション" do
       it "emailが空欄の場合は無効であること" do
         user = build(:user, email: nil)
+
         expect(user).to be_invalid
         expect(user.errors[:email]).to be_present
       end
@@ -17,12 +42,14 @@ RSpec.describe User, type: :model do
       it "emailが重複している場合は無効であること" do
         create(:user, email: "test@example.com")
         user = build(:user, email: "test@example.com")
+
         expect(user).to be_invalid
         expect(user.errors[:email]).to be_present
       end
 
       it "emailが正しい形式でない場合は無効であること" do
         user = build(:user, email: "invalid_email")
+
         expect(user).to be_invalid
         expect(user.errors[:email]).to be_present
       end
@@ -30,36 +57,42 @@ RSpec.describe User, type: :model do
     context "passwordのバリデーション" do
       it "passwordが空欄の場合は無効であること" do
         user = build(:user, password: nil)
+
         expect(user).to be_invalid
         expect(user.errors[:password]).to be_present
       end
 
       it "password_confirmationが空欄の場合は無効であること" do
         user = build(:user, password_confirmation: nil)
+
         expect(user).to be_invalid
         expect(user.errors[:password_confirmation]).to be_present
       end
 
       it "passwordが" "である場合は無効であること" do
         user = build(:user, password: "")
+
         expect(user).to be_invalid
         expect(user.errors[:password]).to be_present
       end
 
       it "passwordが8文字未満の場合は無効であること" do
         user = build(:user, password: "short")
+
         expect(user).to be_invalid
         expect(user.errors[:password]).to be_present
       end
 
       it "passwordとpassword_confirmationが一致しない場合は無効であること" do
         user = build(:user, password: "password", password_confirmation: "different")
+
         expect(user).to be_invalid
         expect(user.errors[:password_confirmation]).to be_present
       end
 
       it "passwordがそのまま保存されていないこと" do
         user = create(:user, password: "password", password_confirmation: "password")
+
         expect(user.crypted_password).to be_present
         expect(user.crypted_password).not_to eq("password")
       end
