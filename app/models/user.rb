@@ -7,4 +7,5 @@ class User < ApplicationRecord
   end
   has_many :preset_titles, dependent: :destroy
   validates :preset_titles, length: { is: 3 }, on: :create
+  has_one :budget, dependent: :destroy
 end
