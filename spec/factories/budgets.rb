@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :budget do
-    user { nil }
-    amount { 1 }
+    association :user
+    amount { 10_000 }
   end
 end
