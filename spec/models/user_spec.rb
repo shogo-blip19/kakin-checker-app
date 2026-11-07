@@ -112,5 +112,39 @@ RSpec.describe User, type: :model do
     expect(user).to be_invalid
     end
   end
+end
+
+describe "関連" do
+  context "preset_titlesとの関係" do
+    it "ユーザーが削除されると、関連するpreset_titlesも削除されること" do
+      user = create(:user)
+
+      expect { user.destroy }.to change(PresetTitle, :count).by(-3)
+    end
+  end
+
+  context "budgetとの関係" do
+    it "ユーザーが削除されると、関連する予算も削除されること" do
+      user = create(:user)
+      create(:budget, user: user)
+      user.destroy
+      expect(Budget.find_by(user: user)).to be_nil
+    end
+
+    it "同じユーザーに対して複数の予算を作成できないこと" do
+      user = create(:user)
+      create(:budget, user: user)
+
+      expect { create(:budget, user: user) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
+
+    it "予算がなくても、ユーザーは有効であること" do
+      user = build(:user)
+
+      expect(user).to be_valid
+      expect(user.budget).to be_nil
+    end
+  end
   end
 end
