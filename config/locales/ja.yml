@@ -37,27 +37,7 @@ ja:
       models:
         user:
           attributes:
-            email:
-              blank: を入力してください
-              taken: は既に使用されています
-              invalid: の形式が正しくありません
-            password:
-              blank: を入力してください
-              too_short: は8文字以上で入力してください
-            password_confirmation:
-              blank: を入力してください
             preset_titles:
               wrong_length: は%{count}件にしてください
-        preset_title:
-          attributes:
-            game_title:
-              blank: を入力してください
-              too_long: は20文字以内で入力してください
-              
-        budget:
-          attributes:
-            amount:
-              not_a_number: は数値で入力してください
-              greater_than: は0より大きい値で入力してください
-              less_than_or_equal_to: は1,000,000以下の値で入力してください
+     
       
