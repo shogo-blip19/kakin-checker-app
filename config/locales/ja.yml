@@ -17,6 +17,17 @@ ja:
       privacy: プライバシーポリシー
       contact: お問い合わせ
 
+  users:
+    new:
+      title: 新規登録
+      email: メールアドレス
+      password: パスワード
+      password_confirmation: パスワード（確認）
+      submit: 登録する
+    create:
+      success: ユーザー登録が完了しました。
+      failure: ユーザー登録に失敗しました。入力内容を確認してください。
+
   activerecord:
     models:
       user: ユーザー

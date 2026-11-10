@@ -9,12 +9,12 @@ RSpec.describe "Users", type: :request do
 
     it "「New User」というタイトルが表示されること" do
       get new_user_path
-      expect(response.body).to include("<title>New User</title>")
+      expect(response.body).to include("<title>新規登録</title>")
     end
 
     it "「New User」という見出しが表示されること" do
       get new_user_path
-      expect(response.body).to include("<h1>New User</h1>")
+      expect(response.body).to include("<h1>新規登録</h1>")
     end
   end
 end
