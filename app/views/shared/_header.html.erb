@@ -2,9 +2,9 @@
   <div class="mx-auto flex h-14 items-center justify-between px-4">
     <%= link_to t('shared.header.logo'), root_path, class: "text-base transition-colors hover:text-primary/80 " %>
     <nav class="flex items-center gap-2 text-[11px] font-medium">
-      <a href="#" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.sign_up') %></a>
+      <a href="/users/new" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.sign_up') %></a>
       <span>|</span>
-      <a href="#" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.login') %></a>
+      <a href="/login" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.login') %></a>
     </nav>
   </div>
 </header>

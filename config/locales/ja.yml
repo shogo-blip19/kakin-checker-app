@@ -17,6 +17,18 @@ ja:
       privacy: プライバシーポリシー
       contact: お問い合わせ
 
+  users:
+    new:
+      title: 新規登録
+      email: メールアドレス
+      password: パスワード
+      password_confirmation: パスワード（確認）
+      submit: 登録する
+      error_header: "%{count} 件のエラーが発生しました。"
+    create:
+      success: ユーザー登録が完了しました。
+      failure: ユーザー登録に失敗しました。入力内容を確認してください。
+
   activerecord:
     models:
       user: ユーザー
@@ -29,6 +41,10 @@ ja:
         password_confirmation: パスワード（確認）
         preset_titles: プリセットタイトル
         budget: 予算
+      user/preset_titles:
+        game_title: ゲームタイトル
+      user/budget:
+        amount: 予算額
       preset_title:
         game_title: ゲームタイトル
       budget:
