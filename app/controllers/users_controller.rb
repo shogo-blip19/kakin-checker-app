@@ -3,10 +3,10 @@ class UsersController < ApplicationController
         @user =User.new(
             preset_titles_attributes: [
                 { game_title: "タイトル①" },
-                { game_title: "タイトル②" }, 
+                { game_title: "タイトル②" },
                 { game_title: "タイトル③" }
             ]
-            
+
         )
         @user.build_budget
     end
@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     def create
         @user = User.new(user_params)
         if @user.save
-            redirect_to root_path, notice: "User created successfully."
+            redirect_to root_path, notice: t(".success")
         else
             @user.build_budget if @user.budget.nil?
             render :new, status: :unprocessable_entity
@@ -24,6 +24,6 @@ class UsersController < ApplicationController
 
     private
     def user_params
-        params.require(:user).permit(:email, :password, :password_confirmation, preset_titles_attributes: [ :game_title ], budget_attributes: [:amount])
+        params.require(:user).permit(:email, :password, :password_confirmation, preset_titles_attributes: [ :game_title ], budget_attributes: [ :amount ])
     end
 end

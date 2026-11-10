@@ -41,7 +41,11 @@ ja:
         password_confirmation: パスワード（確認）
         preset_titles: プリセットタイトル
         budget: 予算
-      preset_titles:
+      user/preset_titles:
+        game_title: ゲームタイトル
+      user/budget:
+        amount: 予算額
+      preset_title:
         game_title: ゲームタイトル
       budget:
         amount: 予算額
