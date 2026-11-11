@@ -6,9 +6,9 @@ class UsersController < ApplicationController
                 { game_title: "タイトル②" },
                 { game_title: "タイトル③" }
             ]
-
         )
         @user.build_budget
+        @initial_step = 0
     end
 
     def create
@@ -17,6 +17,7 @@ class UsersController < ApplicationController
             redirect_to root_path, notice: t(".success")
         else
             @user.build_budget if @user.budget.nil?
+            @initial_step = 0
             render :new, status: :unprocessable_entity
         end
     end

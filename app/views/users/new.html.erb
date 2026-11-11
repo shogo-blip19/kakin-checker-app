@@ -15,43 +15,74 @@
   </div>
 <% end %>
 
-<%= form_with model: @user, class: "space-y-4" do |f| %>
-  <div>
-    <%= f.label :email, class: "mb-1 block text-sm" %>
-    <%= f.email_field :email, autofocus: true, autocomplete: "email",
-          class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-  </div>
+<%= form_with model: @user, class: "space-y-4",
+      data: { controller: "step", step_index_value: @initial_step } do |f| %>
 
-  <div>
-    <%= f.label :password, class: "mb-1 block text-sm" %>
-    <%= f.password_field :password, autocomplete: "new-password",
-          class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-  </div>
-
-  <div>
-    <%= f.label :password_confirmation, class: "mb-1 block text-sm" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password",
-          class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-  </div>
-
-  <%= f.fields_for :preset_titles do |tf| %>
+  <%# パネル1：ユーザー情報 %>
+  <div data-step-target="panel" class="space-y-4">
     <div>
-      <%= tf.label :game_title, class: "mb-1 block text-sm" %>
-      <%= tf.text_field :game_title,
+      <%= f.label :email, class: "mb-1 block text-sm" %>
+      <%= f.email_field :email,required: true, autofocus: true, autocomplete: "email",
             class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
     </div>
-  <% end %>
 
-  <%= f.fields_for :budget do |bf| %>
     <div>
-      <%= bf.label :amount, class: "mb-1 block text-sm" %>
-      <%= bf.number_field :amount, min: 1, max: 1_000_000, step: 1,
+      <%= f.label :password, class: "mb-1 block text-sm" %>
+      <%= f.password_field :password,required: true, minlength: 8, autocomplete: "new-password",
             class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit t('users.new.submit'),
-          class: "w-full cursor-pointer rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80" %>
+    <div>
+      <%= f.label :password_confirmation, class: "mb-1 block text-sm" %>
+      <%= f.password_field :password_confirmation,required: true, minlength: 8, autocomplete: "new-password",
+            class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
+    </div>
+
+    <button type="button" data-action="click->step#next"
+            class="w-full rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80">
+      次へ
+    </button>
+  </div>
+
+  <%# パネル2：プリセットタイトル %>
+  <div data-step-target="panel" class="space-y-4">
+    <%= f.fields_for :preset_titles do |tf| %>
+      <div>
+        <%= tf.label :game_title, class: "mb-1 block text-sm" %>
+        <%= tf.text_field :game_title,required: true,maxlength: 20, autocomplete: "off",
+              class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
+      </div>
+    <% end %>
+
+    <div class="flex gap-2">
+      <button type="button" data-action="click->step#back"
+              class="w-full rounded border border-gray-400 px-4 py-3 text-lg">
+        戻る
+      </button>
+      <button type="button" data-action="click->step#next"
+              class="w-full rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80">
+        次へ
+      </button>
+    </div>
+  </div>
+
+  <%# パネル3：予算 %>
+  <div data-step-target="panel" class="space-y-4">
+    <%= f.fields_for :budget do |bf| %>
+      <div>
+        <%= bf.label :amount, class: "mb-1 block text-sm" %>
+        <%= bf.number_field :amount, min: 1, max: 1_000_000, step: 1,
+              class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
+      </div>
+    <% end %>
+
+    <div class="flex gap-2">
+      <button type="button" data-action="click->step#back"
+              class="w-full rounded border border-gray-400 px-4 py-3 text-lg">
+        戻る
+      </button>
+      <%= f.submit t("users.new.submit"),
+            class: "w-full cursor-pointer rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80" %>
+    </div>
   </div>
 <% end %>
