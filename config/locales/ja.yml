@@ -18,16 +18,25 @@ ja:
       contact: お問い合わせ
 
   users:
-    new:
-      title: 新規登録
-      email: メールアドレス
-      password: パスワード
-      password_confirmation: パスワード（確認）
-      submit: 登録する
-      error_header: "%{count} 件のエラーが発生しました。"
-    create:
-      success: ユーザー登録が完了しました。
-      failure: ユーザー登録に失敗しました。入力内容を確認してください。
+      new:
+        title: 新規登録
+        heading: 会員登録
+        submit: 登録
+        skip: スキップして始める
+        step_title_1: 基本情報
+        step_title_2: ゲームタイトル登録（3つまで）
+        step_title_3: 月間予算設定
+        budget_description: （スキップして登録可能）
+        email_placeholder: あなたのメールアドレス
+        password_placeholder: あなたのパスワード
+        password_confirmation_placeholder: もう一度、パスワードを入力
+        game_title_placeholder: ゲームタイトル
+        amount_placeholder: あなたの月に抑えたい予算
+        error_header: "%{count}件のエラーが発生しました。"
+      create:
+        success: ユーザー登録が完了しました。
+        failure: ユーザー登録に失敗しました。入力内容を確認してください。
+      
 
   activerecord:
     models:

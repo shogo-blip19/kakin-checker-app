@@ -1,6 +1,19 @@
 <% content_for :title, t('.title') %>
 
-<h1 class="mb-6 text-center text-xl font-bold"><%= t('.title') %></h1>
+<%
+  field_class = "w-full rounded-lg border border-[#d9d9d9] bg-white px-4 py-3 text-base text-black placeholder:text-[#b3b3b3]"
+  label_class = "mb-1 block text-sm font-medium"
+  primary_class = "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-lg hover:bg-primary/80"
+  circled = %w[① ② ③]
+  number = 0
+%>
+
+<div data-controller="step" data-step-index-value="<%= @initial_step %>">
+  <div class="mb-6 text-center">
+    <h1 class="text-[32px] leading-10"><%= t(".heading") %></h1>
+    <p data-step-target="subtitle" class="text-[24px] text-base font-medium">Step 1/3 - <%= t(".step_title_1") %></p>
+  </div>
+
 
 <% if @user.errors.any? %>
   <div id="error_explanation" class="mb-6 rounded border border-red-400 bg-red-950 p-4 text-sm">
@@ -15,74 +28,64 @@
   </div>
 <% end %>
 
-<%= form_with model: @user, class: "space-y-4",
-      data: { controller: "step", step_index_value: @initial_step } do |f| %>
+<%= form_with model: @user, novalidate: true, class: "mx-auto w-full max-w-xs",
+        data: { step_target: "form" } do |f| %>
 
-  <%# パネル1：ユーザー情報 %>
-  <div data-step-target="panel" class="space-y-4">
-    <div>
-      <%= f.label :email, class: "mb-1 block text-sm" %>
-      <%= f.email_field :email,required: true, autofocus: true, autocomplete: "email",
-            class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-    </div>
-
-    <div>
-      <%= f.label :password, class: "mb-1 block text-sm" %>
-      <%= f.password_field :password,required: true, minlength: 8, autocomplete: "new-password",
-            class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-    </div>
-
-    <div>
-      <%= f.label :password_confirmation, class: "mb-1 block text-sm" %>
-      <%= f.password_field :password_confirmation,required: true, minlength: 8, autocomplete: "new-password",
-            class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
-    </div>
-
-    <button type="button" data-action="click->step#next"
-            class="w-full rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80">
-      次へ
-    </button>
-  </div>
-
-  <%# パネル2：プリセットタイトル %>
-  <div data-step-target="panel" class="space-y-4">
-    <%= f.fields_for :preset_titles do |tf| %>
+    <%# パネル1：ユーザー情報 %>
+    <div data-step-target="panel" data-step-title="<%= t('.step_title_1') %>" class="space-y-6">
       <div>
-        <%= tf.label :game_title, class: "mb-1 block text-sm" %>
-        <%= tf.text_field :game_title,required: true,maxlength: 20, autocomplete: "off",
-              class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
+        <%= f.label :email, class: label_class %>
+        <%= f.email_field :email, required: true, autofocus: true, autocomplete: "email",
+              placeholder: t(".email_placeholder"), class: field_class %>
       </div>
-    <% end %>
-
-    <div class="flex gap-2">
-      <button type="button" data-action="click->step#back"
-              class="w-full rounded border border-gray-400 px-4 py-3 text-lg">
-        戻る
-      </button>
-      <button type="button" data-action="click->step#next"
-              class="w-full rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80">
-        次へ
-      </button>
-    </div>
-  </div>
-
-  <%# パネル3：予算 %>
-  <div data-step-target="panel" class="space-y-4">
-    <%= f.fields_for :budget do |bf| %>
       <div>
-        <%= bf.label :amount, class: "mb-1 block text-sm" %>
-        <%= bf.number_field :amount, min: 1, max: 1_000_000, step: 1,
-              class: "w-full rounded border border-gray-400 bg-white px-3 py-2 text-black" %>
+        <%= f.label :password, class: label_class %>
+        <%= f.password_field :password, required: true, minlength: 8, autocomplete: "new-password",
+              placeholder: t(".password_placeholder"), class: field_class %>
       </div>
-    <% end %>
-
-    <div class="flex gap-2">
-      <button type="button" data-action="click->step#back"
-              class="w-full rounded border border-gray-400 px-4 py-3 text-lg">
-        戻る
-      </button>
-      <%= f.submit t("users.new.submit"),
-            class: "w-full cursor-pointer rounded bg-primary px-4 py-3 text-lg hover:bg-primary/80" %>
+      <div>
+        <%= f.label :password_confirmation, class: label_class %>
+        <%= f.password_field :password_confirmation, required: true, autocomplete: "new-password",
+              placeholder: t(".password_confirmation_placeholder"), class: field_class %>
+      </div>
+      <button type="button" data-action="click->step#next" class="<%= primary_class %>">次へ</button>
     </div>
-  </div>
-<% end %>
+
+    <%# パネル2：プリセットタイトル %>
+    <div data-step-target="panel" data-step-title="<%= t('.step_title_2') %>" class="space-y-6">
+      <%= f.fields_for :preset_titles do |tf| %>
+        <div>
+          <%= tf.label :game_title, "#{PresetTitle.human_attribute_name(:game_title)}#{circled[number]}", class: label_class %>
+          <%= tf.text_field :game_title, required: true, maxlength: 20,
+                placeholder: t(".game_title_placeholder"), class: field_class %>
+        </div>
+        <% number += 1 %>
+      <% end %>
+      <div class="flex gap-2">
+      
+        <button type="button" data-action="click->step#back"
+                class="w-full rounded border border-gray-400 px-4 py-3 text-lg">戻る</button>
+        <button type="button" data-action="click->step#next" class="<%= primary_class %>">次へ</button>
+      </div>
+    </div>
+
+    <%# パネル3：予算 %>
+    <div data-step-target="panel" data-step-title="<%= t('.step_title_3') %>" class="space-y-6">
+      <p class="text-[20px] text-center text-sm font-medium"><%= t(".budget_description") %></p>
+      <%= f.fields_for :budget do |bf| %>
+        <div>
+          <%= bf.label :amount, class: label_class %>
+          <%= bf.number_field :amount, min: 1, max: 1_000_000, step: 1,
+                placeholder: t(".amount_placeholder"), data: { step_target: "amount" }, class: field_class %>
+        </div>
+      <% end %>
+      <div class="flex gap-2">
+        <%# 戻るボタン：今のコードのまま（変更なし） %>
+        <button type="button" data-action="click->step#back"
+                class="w-full rounded border border-gray-400 px-4 py-3 text-lg">戻る</button>
+        <%= f.submit t("users.new.submit"), class: primary_class %>
+      </div>
+      
+    </div>
+  <% end %>
+</div>
