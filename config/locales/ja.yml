@@ -12,6 +12,7 @@ ja:
       logo: 課金チェッカー
       sign_up: 新規登録
       login: ログイン
+      logout: ログアウト
     footer:
       terms: 利用規約
       privacy: プライバシーポリシー
@@ -64,5 +65,30 @@ ja:
           attributes:
             preset_titles:
               wrong_length: は%{count}件にしてください
+    shared:
+    header:
+      logout: ログアウト       # ← この行だけを、既存の shared.header に追加
+
+  sessions:
+    new:
+      title: ログイン
+      heading: ログイン
+      email: メールアドレス
+      password: パスワード
+      submit: ログイン
+      email_placeholder: あなたのメールアドレス
+      password_placeholder: あなたのパスワード
+    create:
+      success: ログインしました。
+      failure: メールアドレスまたはパスワードが正しくありません。
+    destroy:
+      success: ログアウトしました。
+    require_login: ログインしてください。
+
+  home:
+    index:
+      title: ホーム
+      heading: ログイン後TOP（仮）
+      welcome: "%{email} でログイン中です。"
      
       

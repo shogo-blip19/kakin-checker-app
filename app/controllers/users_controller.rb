@@ -14,7 +14,8 @@ class UsersController < ApplicationController
     def create
         @user = User.new(user_params)
         if @user.save
-            redirect_to root_path, notice: t(".success")
+            auto_login(@user)
+            redirect_to home_path, notice: t(".success")
         else
             @user.build_budget if @user.budget.nil?
             @initial_step = 0
@@ -26,5 +27,9 @@ class UsersController < ApplicationController
     private
     def user_params
         params.require(:user).permit(:email, :password, :password_confirmation, preset_titles_attributes: [ :game_title ], budget_attributes: [ :amount ])
+    end
+
+    def not_authenticated
+        redirect_to login_path, alert: t("sessions.require_login")
     end
 end

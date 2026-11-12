@@ -48,16 +48,26 @@ RSpec.describe "Users", type: :request do
         }.to change(User, :count).by(1).and change(PresetTitle, :count).by(3).and change(Budget, :count).by(1)
       end
 
-      it "ルートパスにリダイレクトされること" do
-        post users_path, params: valid_params
-        expect(response).to redirect_to(root_path)
-      end
+      it "ログイン後のホームにリダイレクトされること" do
+  post users_path, params: valid_params
+  expect(response).to redirect_to(home_path)
+end
 
-      it "フラッシュメッセージが表示されること" do
-        post users_path, params: valid_params
-        follow_redirect!
-        expect(response.body).to include("ユーザー登録が完了しました")
-      end
+    # 変更：メッセージの確認（テスト名だけ、実態に合わせる）
+    it "登録後のホーム画面に、完了メッセージが表示されること" do
+      post users_path, params: valid_params
+      follow_redirect!
+
+      expect(response.body).to include("ユーザー登録が完了しました。")
+    end
+
+    # 追加：自動ログイン
+    it "登録後、そのままログイン状態になること" do
+      post users_path, params: valid_params
+      get home_path
+
+      expect(response).to have_http_status(:ok)
+    end
     end
 
     context "有効なパラメータの場合(予算なし)" do
@@ -69,6 +79,13 @@ RSpec.describe "Users", type: :request do
     end
 
     context "無効なパラメータの場合" do
+      it "登録に失敗したとき、ログイン状態にならないこと" do
+        post users_path, params: valid_params.deep_merge(user: { email: "" })
+        get home_path
+
+        expect(response).to redirect_to(login_path)
+      end
+
       it "メールアドレスが空の場合、ユーザー、プリセットタイトル、予算が作成されないこと" do
         expect {
           post users_path, params: valid_params.deep_merge(user: { email: "" })

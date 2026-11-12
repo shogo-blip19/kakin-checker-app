@@ -1,10 +1,14 @@
 <header class="bg-bar">
-  <div class="mx-auto flex h-14 items-center justify-between px-4">
-    <%= link_to t('shared.header.logo'), root_path, class: "text-base transition-colors hover:text-primary/80 " %>
+  <div class="mx-auto flex h-14 max-w-md items-center justify-between px-4">
+    <%= link_to t(".logo"), (logged_in? ? home_path : root_path), class: "text-base" %>
     <nav class="flex items-center gap-2 text-[11px] font-medium">
-      <a href="/users/new" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.sign_up') %></a>
-      <span>|</span>
-      <a href="/login" class="underline transition-colors hover:text-primary/80"><%= t('shared.header.login') %></a>
+      <% if logged_in? %>
+        <%= button_to t(".logout"), logout_path, method: :delete, class: "cursor-pointer underline" %>
+      <% else %>
+        <%= link_to "👤 #{t('.sign_up')}", new_user_path, class: "underline" %>
+        <span>|</span>
+        <%= link_to "🚪 #{t('.login')}", login_path, class: "underline" %>
+      <% end %>
     </nav>
   </div>
 </header>

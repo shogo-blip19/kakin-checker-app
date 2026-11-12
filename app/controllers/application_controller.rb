@@ -4,4 +4,9 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  private
+  def not_authenticated
+        redirect_to login_path, alert: t("sessions.require_login")
+  end
 end
