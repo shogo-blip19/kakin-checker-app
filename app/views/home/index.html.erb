@@ -1,6 +1,16 @@
 <% content_for :title, t(".title") %>
 
-<div class="py-10 text-center">
-  <h1 class="text-2xl"><%= t(".heading") %></h1>
-  <p class="mt-4 text-sm"><%= t(".welcome", email: current_user.email) %></p>
+<div class="mx-auto mt-16 w-full max-w-[294px] space-y-12">
+  <%= link_to "#",
+        class: "flex h-[136px] items-center justify-center gap-3 rounded-lg bg-primary text-2xl hover:bg-primary/80" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+         stroke="currentColor" class="size-8" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+    <%= t(".record") %>
+  <% end %>
+
+  <%= link_to t(".history"), "#",
+        class: "flex h-[107px] items-center justify-center rounded-lg bg-gray-400 text-2xl hover:bg-gray-300" %>
 </div>

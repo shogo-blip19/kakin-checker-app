@@ -1,13 +1,21 @@
 <header class="bg-bar">
   <div class="mx-auto flex h-14 max-w-md items-center justify-between px-4">
-    <%= link_to t(".logo"), (logged_in? ? home_path : root_path), class: "text-base" %>
-    <nav class="flex items-center gap-2 text-[11px] font-medium">
+    <%= link_to t(".logo"), (logged_in? ? home_path : root_path),
+          class: "text-base transition-colors hover:text-primary/80" %>
+    <nav class="flex items-center gap-3 text-[11px] font-medium">
       <% if logged_in? %>
-        <%= button_to t(".logout"), logout_path, method: :delete, class: "cursor-pointer underline" %>
+        <span title="<%= current_user.email %>"
+              class="flex size-8 items-center justify-center rounded-full bg-white text-sm text-[#4f378a]">
+          <%= current_user.email[0].upcase %>
+        </span>
+        <%= button_to t(".logout"), logout_path, method: :delete,
+              class: "cursor-pointer underline transition-colors hover:text-primary/80" %>
       <% else %>
-        <%= link_to "👤 #{t('.sign_up')}", new_user_path, class: "underline" %>
+        <%= link_to "👤 #{t('.sign_up')}", new_user_path,
+              class: "underline transition-colors hover:text-primary/80" %>
         <span>|</span>
-        <%= link_to "🚪 #{t('.login')}", login_path, class: "underline" %>
+        <%= link_to "🚪 #{t('.login')}", login_path,
+              class: "underline transition-colors hover:text-primary/80" %>
       <% end %>
     </nav>
   </div>

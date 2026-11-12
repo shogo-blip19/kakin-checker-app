@@ -17,6 +17,10 @@ ja:
       terms: 利用規約
       privacy: プライバシーポリシー
       contact: お問い合わせ
+    nav:
+      top: TOP
+      record: 課金登録
+      history: 課金履歴
 
   users:
       new:
@@ -88,7 +92,7 @@ ja:
   home:
     index:
       title: ホーム
-      heading: ログイン後TOP（仮）
-      welcome: "%{email} でログイン中です。"
+      record: 課金を記録
+      history: 履歴を見る
      
       

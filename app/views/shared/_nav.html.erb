@@ -1,0 +1,16 @@
+<%
+  base_class = "rounded-full px-4 py-1"
+  active_class = "bg-primary"
+%>
+
+<nav class="bg-gray-800">
+  <ul class="mx-auto flex h-14 max-w-md items-center justify-around px-4 text-xs font-medium">
+    <li>
+      <%= link_to t(".top"), home_path,
+            class: [base_class, "transition-colors hover:text-primary/80", (active_class if current_page?(home_path))],
+            aria: { current: ("page" if current_page?(home_path)) } %>
+    </li>
+    <li><%= link_to t(".record"), "#", class: [base_class, "transition-colors hover:text-primary/80"] %></li>
+    <li><%= link_to t(".history"), "#", class: [base_class, "transition-colors hover:text-primary/80"] %></li>
+  </ul>
+</nav>
