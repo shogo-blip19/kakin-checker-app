@@ -18,15 +18,23 @@ RSpec.describe "Home", type: :request do
     end
 
     context "ログイン済みの場合" do
-      let(:user) { create(:user, email: "home_user@example.com") }
+        let(:user) { create(:user, email: "home_user@example.com") }
 
-      it "正常に表示され、ログイン中のメールアドレスが表示されること" do
-        log_in_as(user)
-        get home_path
+        before { log_in_as(user) }
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("home_user@example.com")
-      end
+        it "正常に表示され、課金記録と履歴のボタンが表示されること" do
+            get home_path
+
+            expect(response).to have_http_status(:ok)
+            expect(response.body).to include("課金を記録")
+            expect(response.body).to include("履歴を見る")
+        end
+
+        it "ヘッダーに、ログイン中のメールアドレス（アバターのtitle）が出力されること" do
+            get home_path
+
+            expect(response.body).to include('title="home_user@example.com"')
+        end
     end
   end
 end

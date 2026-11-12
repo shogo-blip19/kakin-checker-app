@@ -107,5 +107,19 @@ RSpec.describe "Sessions", type: :request do
       expect(response.body).not_to include(%(href="#{new_user_path}"))
       expect(response.body).not_to include(%(href="#{login_path}"))
     end
+
+    it "ログイン中は、ナビゲーション（課金登録・課金履歴）が表示されること" do
+        log_in_as(user)
+        get home_path
+
+        expect(response.body).to include("課金登録")
+        expect(response.body).to include("課金履歴")
+    end
+
+    it "未ログインのときは、ナビゲーションが表示されないこと" do
+    get root_path
+
+    expect(response.body).not_to include("課金履歴")
+    end
   end
 end

@@ -24,6 +24,7 @@
 
 <body class="bg-dark text-white min-h-screen flex flex-col">
   <%= render "shared/header" %>
+  <%= render "shared/nav" if logged_in? %>
   <main class="flex-1 w-full max-w-md mx-auto px-4 py-6 items-center flex flex-col gap-6">
    <% flash.each do |type, message| %>
     <div class="mb-4 rounded border p-3 text-sm
