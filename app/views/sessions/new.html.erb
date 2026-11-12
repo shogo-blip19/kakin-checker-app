@@ -1,0 +1,24 @@
+<% content_for :title, t(".title") %>
+
+<%
+  field_class = "w-full rounded-lg border border-[#d9d9d9] bg-white px-4 py-3 text-base text-black placeholder:text-[#b3b3b3]"
+  label_class = "mb-1 block text-sm font-medium"
+%>
+
+<h1 class="mb-6 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
+
+<%= form_with url: login_path, class: "mx-auto w-full max-w-xs space-y-6" do %>
+  <div>
+    <%= label_tag :email, t(".email"), class: label_class %>
+    <%= email_field_tag :email, params[:email], required: true, autofocus: true, autocomplete: "email",
+          placeholder: t(".email_placeholder"), class: field_class %>
+  </div>
+
+  <div>
+    <%= label_tag :password, t(".password"), class: label_class %>
+    <%= password_field_tag :password, nil, required: true, autocomplete: "current-password",
+          placeholder: t(".password_placeholder"), class: field_class %>
+  </div>
+
+  <%= submit_tag t(".submit"), class: "w-full cursor-pointer rounded-lg bg-primary px-4 py-3 text-lg hover:bg-primary/80" %>
+<% end %>

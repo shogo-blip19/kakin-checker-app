@@ -1,0 +1,6 @@
+<% content_for :title, t(".title") %>
+
+<div class="py-10 text-center">
+  <h1 class="text-2xl"><%= t(".heading") %></h1>
+  <p class="mt-4 text-sm"><%= t(".welcome", email: current_user.email) %></p>
+</div>
