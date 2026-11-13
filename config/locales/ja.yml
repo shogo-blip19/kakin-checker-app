@@ -12,7 +12,87 @@ ja:
       logo: 課金チェッカー
       sign_up: 新規登録
       login: ログイン
+      logout: ログアウト
     footer:
       terms: 利用規約
       privacy: プライバシーポリシー
       contact: お問い合わせ
+    nav:
+      top: TOP
+      record: 課金登録
+      history: 課金履歴
+
+  users:
+      new:
+        title: 新規登録
+        heading: 会員登録
+        submit: 登録
+        skip: スキップして始める
+        step_title_1: 基本情報
+        step_title_2: ゲームタイトル登録（3つまで）
+        step_title_3: 月間予算設定
+        budget_description: （スキップして登録可能）
+        email_placeholder: あなたのメールアドレス
+        password_placeholder: あなたのパスワード
+        password_confirmation_placeholder: もう一度、パスワードを入力
+        game_title_placeholder: ゲームタイトル
+        amount_placeholder: あなたの月に抑えたい予算
+        error_header: "%{count}件のエラーが発生しました。"
+      create:
+        success: ユーザー登録が完了しました。
+        failure: ユーザー登録に失敗しました。入力内容を確認してください。
+      
+
+  activerecord:
+    models:
+      user: ユーザー
+      preset_title: プリセットタイトル
+      budget: 予算
+    attributes:
+      user:
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認）
+        preset_titles: プリセットタイトル
+        budget: 予算
+      user/preset_titles:
+        game_title: ゲームタイトル
+      user/budget:
+        amount: 予算額
+      preset_title:
+        game_title: ゲームタイトル
+      budget:
+        amount: 予算額
+    errors:
+      models:
+        user:
+          attributes:
+            preset_titles:
+              wrong_length: は%{count}件にしてください
+    shared:
+    header:
+      logout: ログアウト       # ← この行だけを、既存の shared.header に追加
+
+  sessions:
+    new:
+      title: ログイン
+      heading: ログイン
+      email: メールアドレス
+      password: パスワード
+      submit: ログイン
+      email_placeholder: あなたのメールアドレス
+      password_placeholder: あなたのパスワード
+    create:
+      success: ログインしました。
+      failure: メールアドレスまたはパスワードが正しくありません。
+    destroy:
+      success: ログアウトしました。
+    require_login: ログインしてください。
+
+  home:
+    index:
+      title: ホーム
+      record: 課金を記録
+      history: 履歴を見る
+     
+      
