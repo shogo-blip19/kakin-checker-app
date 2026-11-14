@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
     user = login(params[:email], params[:password])
 
     if user
-      redirect_to home_path, notice: t(".success")
+      redirect_to home_pathse, notice: t(".success")
     else
       flash.now[:alert] = t(".failure")
       render :new, status: :unprocessable_entity
