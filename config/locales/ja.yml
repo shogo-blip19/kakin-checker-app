@@ -48,6 +48,7 @@ ja:
       user: ユーザー
       preset_title: プリセットタイトル
       budget: 予算
+      pay: 課金記録
     attributes:
       user:
         email: メールアドレス
@@ -63,15 +64,26 @@ ja:
         game_title: ゲームタイトル
       budget:
         amount: 予算額
+      pay:
+        amount: 課金額
+        paid_at: 課金日
+        preset_title: ゲームタイトル
     errors:
       models:
         user:
           attributes:
             preset_titles:
               wrong_length: は%{count}件にしてください
-    shared:
-    header:
-      logout: ログアウト       # ← この行だけを、既存の shared.header に追加
+          
+        pay:
+          attributes:
+            paid_at:
+              future: は今日以前の日付を入力してください
+            preset_title:
+              invalid: は選択できません
+           
+              
+ 
 
   sessions:
     new:
