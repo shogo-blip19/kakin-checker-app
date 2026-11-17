@@ -1,0 +1,34 @@
+<% content_for :title, t(".title") %>
+
+<div class="mx-auto w-full max-w-sm">
+  <%# TODO(#20): 履歴選択画面のパスに置き換える %>
+  <%= link_to "#", class: "mb-2 inline-flex items-center gap-1 text-[11px] font-medium underline" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+         stroke="currentColor" class="size-3" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+    <%= t(".back") %>
+  <% end %>
+
+  <h1 class="mb-8 text-center text-[32px] leading-10">
+    <%= t(".heading", year: @month.year, month: @month.month) %>
+  </h1>
+
+  <h2 class="mb-3 text-base font-medium">
+    📝 <%= t(".list_title") %> <%= t(".count", count: @pays.size) %>
+  </h2>
+
+  <% if @pays.empty? %>
+    <p class="rounded-lg bg-card px-4 py-6 text-center text-sm"><%= t(".empty") %></p>
+  <% else %>
+    <ul class="space-y-3">
+      <% @pays.each do |pay| %>
+        <li class="rounded-lg bg-card px-4 py-3 text-sm leading-6">
+          <p>📆 <%= l(pay.paid_at, format: :history) %></p>
+          <p>🎮 <%= pay.preset_title.game_title %></p>
+          <p>💪 <%= kakin_power(pay.amount) %></p>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

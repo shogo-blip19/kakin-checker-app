@@ -56,6 +56,14 @@ ja:
       error_header: "%{count}件のエラーが発生しました。"
     create:
       success: 課金を記録しました。
+    power: "%{amount}課金力"
+    index:
+      title: 課金履歴
+      heading: "%{year}年%{month}月の記録"
+      back: 履歴選択に戻る
+      list_title: 登録履歴一覧
+      count: "（%{count}件）"
+      empty: この月の記録は、まだありません。
       
 
   activerecord:
@@ -121,5 +129,10 @@ ja:
       title: ホーム
       record: 課金を記録
       history: 履歴を見る
+
+  date:
+    formats:
+      history: "%-m/%-d（%a）"
+
      
       

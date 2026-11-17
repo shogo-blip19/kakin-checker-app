@@ -11,6 +11,11 @@ class Pay < ApplicationRecord
   validate :paid_at_not_in_future
   validate :preset_title_belongs_to_user
 
+  scope :in_month, ->(date) { where(paid_at: date.all_month) }
+  scope :recent_first, -> { order(paid_at: :desc, id: :desc) }
+
+
+
   private
 
   def paid_at_not_in_future
