@@ -176,4 +176,35 @@ RSpec.describe Pay, type: :model do
       expect(title.pays).to include(pay)
     end
   end
+
+
+
+
+  describe "スコープ" do
+    let(:user) { create(:user) }
+
+    describe ".in_month" do
+      it "指定した月の記録だけを返すこと（月初と月末を含む）" do
+        in_first = create(:pay, user: user, paid_at: Date.new(2025, 10, 1))
+        in_last = create(:pay, user: user, paid_at: Date.new(2025, 10, 31))
+        before_month = create(:pay, user: user, paid_at: Date.new(2025, 9, 30))
+        after_month = create(:pay, user: user, paid_at: Date.new(2025, 11, 1))
+
+        result = Pay.in_month(Date.new(2025, 10, 15))
+
+        expect(result).to contain_exactly(in_first, in_last)
+        expect(result).not_to include(before_month, after_month)
+      end
+    end
+
+    describe ".recent_first" do
+      it "日付の新しい順に並び、同じ日付なら、新しく作られた記録が先になること" do
+        old = create(:pay, user: user, paid_at: Date.new(2025, 10, 1))
+        same_day_first = create(:pay, user: user, paid_at: Date.new(2025, 10, 15))
+        same_day_second = create(:pay, user: user, paid_at: Date.new(2025, 10, 15))
+
+        expect(Pay.recent_first.to_a).to eq([ same_day_second, same_day_first, old ])
+      end
+    end
+  end
 end

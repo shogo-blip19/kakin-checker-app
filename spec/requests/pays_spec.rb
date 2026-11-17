@@ -203,4 +203,103 @@ RSpec.describe "Pays", type: :request do
       end
     end
   end
+
+
+
+
+
+  describe "GET /pays（月別の履歴一覧）" do
+    context "未ログインの場合" do
+      it "ログイン画面にリダイレクトされること" do
+        get pays_path
+
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context "ログイン済みの場合" do
+      let(:first_title) { user.preset_titles.order(:id).first }
+      let(:second_title) { user.preset_titles.order(:id).second }
+
+      before do
+        log_in_as(user)
+        first_title.update!(game_title: "原神")
+        second_title.update!(game_title: "スタレ")
+      end
+
+      it "指定した月の記録だけが表示され、件数も表示されること" do
+        create(:pay, user: user, preset_title: first_title, amount: 10_000, paid_at: Date.new(2025, 10, 15))
+        create(:pay, user: user, preset_title: second_title, amount: 3_000, paid_at: Date.new(2025, 10, 1))
+        create(:pay, user: user, preset_title: first_title, amount: 99_999, paid_at: Date.new(2025, 9, 30))
+        create(:pay, user: user, preset_title: first_title, amount: 88_888, paid_at: Date.new(2025, 11, 1))
+
+        get pays_path(month: "2025-10")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("2025年10月の記録")
+        expect(response.body).to include("10,000課金力", "3,000課金力", "（2件）")
+        expect(response.body).not_to include("99,999課金力")
+        expect(response.body).not_to include("88,888課金力")
+      end
+
+      it "ゲームタイトル名と、日付（月/日（曜日））が表示されること" do
+        create(:pay, user: user, preset_title: first_title, amount: 10_000, paid_at: Date.new(2025, 10, 15))
+        create(:pay, user: user, preset_title: second_title, amount: 3_000, paid_at: Date.new(2025, 10, 1))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include("原神", "スタレ")
+        expect(response.body).to include("10/15（水）", "10/1（水）")
+      end
+
+      it "日付の新しい順に表示されること" do
+        create(:pay, user: user, preset_title: first_title, amount: 3_000, paid_at: Date.new(2025, 10, 1))
+        create(:pay, user: user, preset_title: first_title, amount: 10_000, paid_at: Date.new(2025, 10, 15))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body.index("10,000課金力")).to be < response.body.index("3,000課金力")
+      end
+
+      it "他のユーザーの記録は表示されないこと" do
+        other_title = other_user.preset_titles.first
+        create(:pay, user: other_user, preset_title: other_title, amount: 77_777, paid_at: Date.new(2025, 10, 15))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).not_to include("77,777課金力")
+      end
+
+      it "記録がない月は、その旨のメッセージが表示されること" do
+        get pays_path(month: "2025-10")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("この月の記録は、まだありません。")
+      end
+
+      it "monthを指定しない場合は、今月の記録が表示されること" do
+        create(:pay, user: user, preset_title: first_title, amount: 12_345, paid_at: Date.current)
+
+        get pays_path
+
+        expect(response.body).to include("#{Date.current.year}年#{Date.current.month}月の記録")
+        expect(response.body).to include("12,345課金力")
+      end
+
+      [ "abc", "2025-13", "" ].each do |invalid_month|
+        it "monthが不正な値（#{invalid_month.inspect}）の場合は、エラーにならず今月が表示されること" do
+          get pays_path(month: invalid_month)
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("#{Date.current.year}年#{Date.current.month}月の記録")
+        end
+      end
+
+      it "ナビゲーションの「課金履歴」が、選択状態になること" do
+        get pays_path
+
+        expect(response.body).to match(/aria-current="page"[^>]*>\s*課金履歴|課金履歴[^<]*<\/a>/)
+      end
+    end
+  end
 end
