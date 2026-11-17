@@ -41,6 +41,21 @@ ja:
       create:
         success: ユーザー登録が完了しました。
         failure: ユーザー登録に失敗しました。入力内容を確認してください。
+  
+  pays:
+    new:
+      title: 課金を記録
+      heading: 課金を記録
+      label_title: 1.ゲームタイトルを選択
+      label_amount: 2.課金額を入力
+      label_date: 3.日付
+      amount_placeholder: 課金した金額を入力
+      presets: 金額プリセット
+      submit: 登録
+      cancel: キャンセル
+      error_header: "%{count}件のエラーが発生しました。"
+    create:
+      success: 課金を記録しました。
       
 
   activerecord:
