@@ -1,16 +1,25 @@
 <%
-  base_class = "rounded-full px-4 py-1"
+  base_class = "rounded-full px-4 py-1 transition-colors"
   active_class = "bg-primary"
+  idle_class = "hover:text-primary/80"
+  top_active = current_page?(home_path)
+  record_active = controller_name == "pays"
 %>
 
 <nav class="bg-gray-800">
   <ul class="mx-auto flex h-14 max-w-md items-center justify-around px-4 text-xs font-medium">
     <li>
       <%= link_to t(".top"), home_path,
-            class: [base_class, "transition-colors hover:text-primary/80", (active_class if current_page?(home_path))],
-            aria: { current: ("page" if current_page?(home_path)) } %>
+            class: [base_class, (top_active ? active_class : idle_class)],
+            aria: { current: ("page" if top_active) } %>
     </li>
-    <li><%= link_to t(".record"), "#", class: [base_class, "transition-colors hover:text-primary/80"] %></li>
-    <li><%= link_to t(".history"), "#", class: [base_class, "transition-colors hover:text-primary/80"] %></li>
+    <li>
+      <%= link_to t(".record"), new_pay_path,
+            class: [base_class, (record_active ? active_class : idle_class)],
+            aria: { current: ("page" if record_active) } %>
+    </li>
+    <li>
+      <%= link_to t(".history"), "#", class: [base_class, idle_class] %>
+    </li>
   </ul>
 </nav>

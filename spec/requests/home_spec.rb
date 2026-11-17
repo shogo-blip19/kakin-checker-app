@@ -35,6 +35,12 @@ RSpec.describe "Home", type: :request do
 
             expect(response.body).to include('title="home_user@example.com"')
         end
+
+        it "課金を記録するボタンとナビゲーションが、課金登録画面に結びついていること" do
+          get home_path
+
+          expect(response.body).to include(%(href="#{new_pay_path}"))
+        end
     end
   end
 end
