@@ -135,4 +135,13 @@ ja:
       history: "%-m/%-d（%a）"
 
      
-      
+  archives:
+    index:
+      title: 課金履歴選択
+      heading: 課金履歴選択
+      year: "%{year}年"
+      previous_year: 前の年へ
+      next_year: 次の年へ
+      list_title: 月別アーカイブ一覧
+      month: "%{year}年 %{month}月"
+      empty: この年の記録は、まだありません。     

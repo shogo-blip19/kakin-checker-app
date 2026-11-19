@@ -41,6 +41,12 @@ RSpec.describe "Home", type: :request do
 
           expect(response.body).to include(%(href="#{new_pay_path}"))
         end
+
+        it "履歴を見るボタンとナビゲーションが、履歴選択画面に結びついていること" do
+          get home_path
+
+          expect(response.body).to include(%(href="#{archives_path}"))
+        end
     end
   end
 end
