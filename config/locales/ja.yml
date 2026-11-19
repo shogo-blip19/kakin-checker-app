@@ -64,6 +64,7 @@ ja:
       list_title: 登録履歴一覧
       count: "（%{count}件）"
       empty: この月の記録は、まだありません。
+      total_title: この月の合計（課金力）
       
 
   activerecord:

@@ -3,7 +3,9 @@ class PaysController < ApplicationController
 
   def index
     @month = month_from(params[:month])
-    @pays = current_user.pays.in_month(@month).recent_first.includes(:preset_title)
+    month_pays = current_user.pays.in_month(@month)
+    @pays = month_pays.recent_first.includes(:preset_title)
+    @total = month_pays.sum(:amount)
   end
 
   def new

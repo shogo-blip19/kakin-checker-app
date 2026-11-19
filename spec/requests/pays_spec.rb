@@ -82,6 +82,14 @@ RSpec.describe "Pays", type: :request do
 
     describe "POST /pays" do
       context "有効なパラメータの場合" do
+        it "登録直後のホーム画面に、課金力（合計）が表示されないこと" do
+          post pays_path, params: valid_params
+          follow_redirect!
+
+          expect(response.body).not_to include("課金力")
+        end
+
+
         it "課金記録が1件作成されること" do
           valid_params
 
@@ -237,7 +245,9 @@ RSpec.describe "Pays", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("2025年10月の記録")
-        expect(response.body).to include("10,000課金力", "3,000課金力", "（2件）")
+        list_amounts = response.body.scan(/💪 ([\d,]+)課金力/).flatten
+        expect(list_amounts).to contain_exactly("10,000", "3,000")
+        expect(response.body).to include("（2件）")
         expect(response.body).not_to include("99,999課金力")
         expect(response.body).not_to include("88,888課金力")
       end
@@ -258,7 +268,8 @@ RSpec.describe "Pays", type: :request do
 
         get pays_path(month: "2025-10")
 
-        expect(response.body.index("10,000課金力")).to be < response.body.index("3,000課金力")
+        list_amounts = response.body.scan(/💪 ([\d,]+)課金力/).flatten
+        expect(list_amounts).to eq(["10,000", "3,000"])
       end
 
       it "他のユーザーの記録は表示されないこと" do
@@ -305,6 +316,24 @@ RSpec.describe "Pays", type: :request do
         get pays_path(month: "2025-10")
 
         expect(response.body).to include(%(href="#{archives_path(year: 2025)}"))
+      end
+
+      it "指定した月の合計が、課金力で表示されること" do
+        create(:pay, user: user, preset_title: first_title, amount: 10_000, paid_at: Date.new(2025, 10, 15))
+        create(:pay, user: user, preset_title: second_title, amount: 3_000, paid_at: Date.new(2025, 10, 1))
+        create(:pay, user: user, preset_title: first_title, amount: 99_999, paid_at: Date.new(2025, 9, 30))
+        create(:pay, user: other_user, preset_title: other_user.preset_titles.first, amount: 77_777, paid_at: Date.new(2025, 10, 20))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(I18n.t("pays.index.total_title"))
+        expect(response.body).to include(">13,000課金力<")
+      end
+
+      it "記録がない月の合計は、0課金力と表示されること" do
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(">0課金力<")
       end
     end
   end
