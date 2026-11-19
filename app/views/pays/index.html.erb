@@ -13,8 +13,12 @@
     <%= t(".heading", year: @month.year, month: @month.month) %>
   </h1>
 
+  <h2 class="mb-3 text-base font-medium">💪 <%= t(".total_title") %></h2>
+  <p class="mb-8 rounded-lg bg-card px-4 py-6 text-center text-2xl"><%= kakin_power(@total) %></p>
+
   <h2 class="mb-3 text-base font-medium">
     📝 <%= t(".list_title") %> <%= t(".count", count: @pays.size) %>
+    
   </h2>
 
   <% if @pays.empty? %>
