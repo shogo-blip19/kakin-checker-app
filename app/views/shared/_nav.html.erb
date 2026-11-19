@@ -3,8 +3,8 @@
   active_class = "bg-primary"
   idle_class = "hover:text-primary/80"
   top_active = current_page?(home_path)
-  history_active = controller_name == "pays" && action_name == "index"
-  record_active = controller_name == "pays" && !history_active
+  history_active = controller_name == "archives" || (controller_name == "pays" && action_name == "index")
+  record_active = controller_name == "pays" && action_name != "index"
 %>
 
 <nav class="bg-gray-800">
@@ -20,8 +20,7 @@
             aria: { current: ("page" if record_active) } %>
     </li>
     <li>
-      <%# TODO(#20): 履歴選択画面のパスに置き換える %>
-      <%= link_to t(".history"), "#",
+      <%= link_to t(".history"), archives_path,
             class: [base_class, (history_active ? active_class : idle_class)],
             aria: { current: ("page" if history_active) } %>
     </li>

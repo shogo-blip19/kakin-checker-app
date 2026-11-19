@@ -29,4 +29,9 @@ class Pay < ApplicationRecord
 
     errors.add(:preset_title, :invalid) if preset_title.user_id != user_id
   end
+
+  # 記録がある月（各月の1日）を、重複なく、新しい順に返す
+  def self.record_months
+    distinct.pluck(:paid_at).map(&:beginning_of_month).uniq.sort.reverse
+  end
 end

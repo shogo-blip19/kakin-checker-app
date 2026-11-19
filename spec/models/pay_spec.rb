@@ -206,5 +206,29 @@ RSpec.describe Pay, type: :model do
         expect(Pay.recent_first.to_a).to eq([ same_day_second, same_day_first, old ])
       end
     end
+
+
+    describe ".record_months" do
+      it "記録がある月（各月の1日）を、重複なく、新しい順に返すこと" do
+        create(:pay, user: user, paid_at: Date.new(2025, 10, 15))
+        create(:pay, user: user, paid_at: Date.new(2025, 10, 1))
+        create(:pay, user: user, paid_at: Date.new(2024, 12, 31))
+        create(:pay, user: user, paid_at: Date.new(2025, 8, 20))
+
+        expect(Pay.record_months).to eq([ Date.new(2025, 10, 1), Date.new(2025, 8, 1), Date.new(2024, 12, 1) ])
+      end
+
+      it "ユーザーの関連から呼ぶと、そのユーザーの記録だけが対象になること" do
+        other = create(:user)
+        create(:pay, user: user, paid_at: Date.new(2025, 10, 15))
+        create(:pay, user: other, paid_at: Date.new(2025, 7, 1))
+
+        expect(user.pays.record_months).to eq([ Date.new(2025, 10, 1) ])
+      end
+
+      it "記録がない場合は、空の配列を返すこと" do
+        expect(user.pays.record_months).to eq([])
+      end
+    end
   end
 end

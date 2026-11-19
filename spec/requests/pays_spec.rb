@@ -300,6 +300,12 @@ RSpec.describe "Pays", type: :request do
 
         expect(response.body).to match(/aria-current="page"[^>]*>\s*課金履歴|課金履歴[^<]*<\/a>/)
       end
+
+      it "履歴選択に戻るリンクが、その月の年の選択画面になっていること" do
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(%(href="#{archives_path(year: 2025)}"))
+      end
     end
   end
 end
