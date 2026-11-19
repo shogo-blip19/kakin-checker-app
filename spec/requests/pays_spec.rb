@@ -269,7 +269,7 @@ RSpec.describe "Pays", type: :request do
         get pays_path(month: "2025-10")
 
         list_amounts = response.body.scan(/💪 ([\d,]+)課金力/).flatten
-        expect(list_amounts).to eq(["10,000", "3,000"])
+        expect(list_amounts).to eq([ "10,000", "3,000" ])
       end
 
       it "他のユーザーの記録は表示されないこと" do
