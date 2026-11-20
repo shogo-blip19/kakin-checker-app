@@ -74,6 +74,11 @@ ja:
       total_title: この月の合計（課金力）
       empty: この月の記録は、まだありません。
       edit: 編集
+      delete: 削除
+      confirm_delete: この記録を削除しますか？（元に戻せません）
+    destroy:
+      success: 課金データを削除しました。
+  
       
 
   activerecord:

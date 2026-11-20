@@ -237,6 +237,16 @@ RSpec.describe "Pays", type: :request do
         second_title.update!(game_title: "スタレ")
       end
 
+      it "各記録に、確認ダイアログつきの削除ボタンが表示されること" do
+        pay = create(:pay, user: user, preset_title: first_title, paid_at: Date.new(2025, 10, 15))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(%(action="#{pay_path(pay)}"))
+        expect(response.body).to include("data-turbo-confirm")
+        expect(response.body).to include(I18n.t("pays.index.confirm_delete"))
+      end
+
       it "各記録に、編集画面へのリンクが表示されること" do
         pay = create(:pay, user: user, preset_title: first_title, paid_at: Date.new(2025, 10, 15))
 
@@ -486,6 +496,83 @@ RSpec.describe "Pays", type: :request do
           expect(response.body).to include('value="12345"')
           expect(response.body).to include(%(href="#{pays_path(month: "2025-10")}"))
         end
+      end
+    end
+  end
+
+  describe "課金データの削除" do
+    let!(:pay) do
+      create(:pay, user: user, preset_title: user.preset_titles.order(:id).first,
+                   amount: 10_000, paid_at: Date.new(2025, 10, 15))
+    end
+    let!(:other_pay) do
+      create(:pay, user: other_user, preset_title: other_user.preset_titles.order(:id).first,
+                   amount: 5_000, paid_at: Date.new(2025, 10, 20))
+    end
+
+    context "未ログインの場合" do
+      it "削除は行われず、ログイン画面にリダイレクトされること" do
+        expect { delete pay_path(pay) }.not_to change(Pay, :count)
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context "ログイン済みの場合" do
+      before { log_in_as(user) }
+
+      it "記録が1件削除されること" do
+        expect { delete pay_path(pay) }.to change(Pay, :count).by(-1)
+        expect(Pay.exists?(pay.id)).to be(false)
+      end
+
+      it "削除した記録の月の一覧に、303でリダイレクトされ、完了メッセージが表示されること" do
+        delete pay_path(pay)
+
+        expect(response).to have_http_status(:see_other)
+        expect(response).to redirect_to(pays_path(month: "2025-10"))
+        follow_redirect!
+        expect(response.body).to include("課金データを削除しました。")
+      end
+
+      it "ほかの記録（自分の別の記録、他のユーザーの記録）は削除されないこと" do
+        own_other = create(:pay, user: user, preset_title: user.preset_titles.order(:id).first,
+                                 amount: 3_000, paid_at: Date.new(2025, 10, 1))
+
+        delete pay_path(pay)
+
+        expect(Pay.exists?(own_other.id)).to be(true)
+        expect(Pay.exists?(other_pay.id)).to be(true)
+      end
+
+      it "削除後の一覧から、その記録が消え、合計も減ること" do
+        create(:pay, user: user, preset_title: user.preset_titles.order(:id).first,
+                     amount: 3_000, paid_at: Date.new(2025, 10, 1))
+
+        delete pay_path(pay)
+        follow_redirect!
+
+        expect(response.body.scan(/💪 ([\d,]+)課金力/).flatten).to eq([ "3,000" ])
+        expect(response.body).to include(">3,000課金力<")
+      end
+
+      it "月の最後の記録を削除すると、その月の合計は0課金力になること" do
+        delete pay_path(pay)
+        follow_redirect!
+
+        expect(response.body).to include(">0課金力<")
+        expect(response.body).to include(I18n.t("pays.index.empty"))
+      end
+
+      it "他のユーザーの記録は、削除できないこと（404）" do
+        expect { delete pay_path(other_pay) }.not_to change(Pay, :count)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "存在しないIDは、404になり、何も削除されないこと" do
+        expect { delete pay_path(0) }.not_to change(Pay, :count)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
