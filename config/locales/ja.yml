@@ -43,28 +43,37 @@ ja:
         failure: ユーザー登録に失敗しました。入力内容を確認してください。
   
   pays:
-    new:
-      title: 課金を記録
-      heading: 課金を記録
+    power: "%{amount}課金力"
+    form:
       label_title: 1.ゲームタイトルを選択
       label_amount: 2.課金額を入力
       label_date: 3.日付
       amount_placeholder: 課金した金額を入力
       presets: 金額プリセット
-      submit: 登録
       cancel: キャンセル
       error_header: "%{count}件のエラーが発生しました。"
+    new:
+      title: 課金を記録
+      heading: 課金を記録
+      submit: 登録
+    edit:
+      title: 課金データ編集
+      heading: 課金データ編集
+      back: 詳細一覧に戻る
+      submit: 更新
     create:
       success: 課金を記録しました。
-    power: "%{amount}課金力"
+    update:
+      success: 課金データを更新しました。
     index:
       title: 課金履歴
       heading: "%{year}年%{month}月の記録"
       back: 履歴選択に戻る
       list_title: 登録履歴一覧
       count: "（%{count}件）"
-      empty: この月の記録は、まだありません。
       total_title: この月の合計（課金力）
+      empty: この月の記録は、まだありません。
+      edit: 編集
       
 
   activerecord:

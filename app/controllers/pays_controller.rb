@@ -1,5 +1,6 @@
 class PaysController < ApplicationController
   before_action :require_login
+  before_action :set_pay, only: %i[edit update]
 
   def index
     @month = month_from(params[:month])
@@ -26,7 +27,22 @@ class PaysController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @pay.update(pay_params)
+      redirect_to month_list_path(@pay), notice: t(".success")
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   private
+    def set_pay
+      @pay = current_user.pays.find(params[:id])
+    end
+
     def pay_params
       params.require(:pay).permit(:preset_title_id, :amount, :paid_at)
     end
@@ -35,5 +51,10 @@ class PaysController < ApplicationController
       Date.strptime(value.to_s, "%Y-%m")
     rescue Date::Error
       Date.current.beginning_of_month
+    end
+
+    # その記録の日付の月の、履歴一覧のパス
+    def month_list_path(pay)
+      pays_path(month: pay.paid_at.strftime("%Y-%m"))
     end
 end

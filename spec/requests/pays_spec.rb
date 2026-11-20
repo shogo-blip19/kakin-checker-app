@@ -90,6 +90,8 @@ RSpec.describe "Pays", type: :request do
         end
 
 
+
+
         it "課金記録が1件作成されること" do
           valid_params
 
@@ -235,6 +237,15 @@ RSpec.describe "Pays", type: :request do
         second_title.update!(game_title: "スタレ")
       end
 
+      it "各記録に、編集画面へのリンクが表示されること" do
+        pay = create(:pay, user: user, preset_title: first_title, paid_at: Date.new(2025, 10, 15))
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(%(href="#{edit_pay_path(pay)}"))
+      end
+
+
       it "指定した月の記録だけが表示され、件数も表示されること" do
         create(:pay, user: user, preset_title: first_title, amount: 10_000, paid_at: Date.new(2025, 10, 15))
         create(:pay, user: user, preset_title: second_title, amount: 3_000, paid_at: Date.new(2025, 10, 1))
@@ -334,6 +345,147 @@ RSpec.describe "Pays", type: :request do
         get pays_path(month: "2025-10")
 
         expect(response.body).to include(">0課金力<")
+      end
+    end
+  end
+
+  describe "課金データの編集・更新" do
+    let!(:pay) do
+      create(:pay, user: user, preset_title: user.preset_titles.order(:id).first,
+                   amount: 10_000, paid_at: Date.new(2025, 10, 15))
+    end
+    let!(:other_pay) do
+      create(:pay, user: other_user, preset_title: other_user.preset_titles.order(:id).first,
+                   amount: 5_000, paid_at: Date.new(2025, 10, 20))
+    end
+    let(:second_title) { user.preset_titles.order(:id).second }
+
+    context "未ログインの場合" do
+      it "編集画面は、ログイン画面にリダイレクトされること" do
+        get edit_pay_path(pay)
+
+        expect(response).to redirect_to(login_path)
+      end
+
+      it "更新は行われず、ログイン画面にリダイレクトされること" do
+        expect { patch pay_path(pay), params: { pay: { amount: "1" } } }.not_to change { pay.reload.amount }
+        expect(response).to redirect_to(login_path)
+      end
+    end
+
+    context "ログイン済みの場合" do
+      before { log_in_as(user) }
+
+      describe "GET /pays/:id/edit" do
+        it "正常に表示され、現在の金額と日付がフォームに入っていること" do
+          get edit_pay_path(pay)
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("課金データ編集")
+          expect(response.body).to include('value="10000"')
+          expect(response.body).to include('value="2025-10-15"')
+        end
+
+        it "現在のゲームタイトルが選択されていること" do
+          pay.update!(preset_title: second_title)
+
+          get edit_pay_path(pay)
+
+          expect(response.body).to match(/<option[^>]*(?:selected[^>]*value="#{second_title.id}"|value="#{second_title.id}"[^>]*selected)/)
+        end
+
+        it "詳細一覧に戻るリンクが、その記録の月の一覧になっていること" do
+          get edit_pay_path(pay)
+
+          expect(response.body).to include(%(href="#{pays_path(month: "2025-10")}"))
+        end
+
+        it "他のユーザーの記録は、開けないこと（404）" do
+          get edit_pay_path(other_pay)
+
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      describe "PATCH /pays/:id" do
+        it "金額、ゲームタイトル、日付を、すべて更新できること" do
+          patch pay_path(pay), params: {
+            pay: { preset_title_id: second_title.id, amount: "3000", paid_at: "2025-09-20" }
+          }
+
+          pay.reload
+          expect(pay.preset_title).to eq(second_title)
+          expect(pay.amount).to eq(3_000)
+          expect(pay.paid_at).to eq(Date.new(2025, 9, 20))
+        end
+
+        it "更新後の日付の月の一覧にリダイレクトされ、完了メッセージが表示されること" do
+          patch pay_path(pay), params: { pay: { paid_at: "2025-09-20" } }
+
+          expect(response).to redirect_to(pays_path(month: "2025-09"))
+          follow_redirect!
+          expect(response.body).to include("課金データを更新しました。")
+        end
+
+        it "金額だけを変更しても、ほかの項目は変わらないこと" do
+          patch pay_path(pay), params: { pay: { amount: "2000" } }
+
+          pay.reload
+          expect(pay.amount).to eq(2_000)
+          expect(pay.paid_at).to eq(Date.new(2025, 10, 15))
+          expect(pay.preset_title).to eq(user.preset_titles.order(:id).first)
+        end
+
+        { "空" => "", "0" => "0", "100万1円" => "1000001", "小数" => "1000.5", "文字列" => "abc" }.each do |label, value|
+          it "金額が#{label}の場合、更新されず422になること" do
+            expect { patch pay_path(pay), params: { pay: { amount: value } } }.not_to change { pay.reload.amount }
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+        end
+
+        it "未来の日付の場合、更新されず、エラーメッセージが表示されること" do
+          expect {
+            patch pay_path(pay), params: { pay: { paid_at: (Date.current + 1.day).to_s } }
+          }.not_to change { pay.reload.paid_at }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to include("課金日は今日以前の日付を入力してください")
+        end
+
+        it "他のユーザーのタイトルIDを送っても、更新されず、エラーメッセージが表示されること" do
+          other_title = other_user.preset_titles.first
+
+          expect {
+            patch pay_path(pay), params: { pay: { preset_title_id: other_title.id } }
+          }.not_to change { pay.reload.preset_title_id }
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.body).to include("ゲームタイトルは選択できません")
+        end
+
+        it "user_idを送っても、記録の持ち主は変わらないこと" do
+          patch pay_path(pay), params: { pay: { user_id: other_user.id, amount: "2000" } }
+
+          pay.reload
+          expect(pay.user).to eq(user)
+          expect(pay.amount).to eq(2_000)
+        end
+
+        it "他のユーザーの記録は、更新できないこと（404）" do
+          expect {
+            patch pay_path(other_pay), params: { pay: { amount: "1" } }
+          }.not_to change { other_pay.reload.amount }
+
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it "更新に失敗したとき、編集画面が再表示され、戻るリンクは元の月のままであること" do
+          patch pay_path(pay), params: { pay: { amount: "12345", paid_at: "2099-01-01" } }
+
+          expect(response.body).to include("課金データ編集")
+          expect(response.body).to include('value="12345"')
+          expect(response.body).to include(%(href="#{pays_path(month: "2025-10")}"))
+        end
       end
     end
   end

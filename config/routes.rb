@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :users, only: %i[new create]
 
-  resources :pays, only: %i[index new create]
+  resources :pays, only: %i[index new create edit update]
 
   resources :archives, only: :index
 
