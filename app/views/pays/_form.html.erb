@@ -1,0 +1,59 @@
+<%
+  card_class = "rounded-lg bg-card p-4"
+  label_class = "mb-2 block text-base font-medium"
+  field_class = "w-full rounded-lg border border-[#d9d9d9] bg-white px-4 py-3 text-base text-black placeholder:text-[#b3b3b3]"
+  amount_presets = [10_000, 30_000, 50_000]
+%>
+
+<% if pay.errors.any? %>
+  <div id="error_explanation" class="mx-auto mb-6 w-full max-w-sm rounded border border-red-400 bg-red-950 p-4 text-sm">
+    <h2 class="mb-2 font-bold"><%= t(".error_header", count: pay.errors.count) %></h2>
+    <ul class="list-disc pl-5">
+      <% pay.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: pay, class: "mx-auto w-full max-w-sm space-y-6", data: { controller: "amount" } do |f| %>
+  <section>
+    <%= f.label :preset_title_id, t(".label_title"), class: label_class %>
+    <div class="<%= card_class %>">
+      <%= f.collection_select :preset_title_id, current_user.preset_titles.order(:id), :id, :game_title, {},
+            class: "w-full rounded-lg bg-card px-2 py-3 text-lg text-white [color-scheme:dark]" %>
+    </div>
+  </section>
+
+  <section>
+    <%= f.label :amount, t(".label_amount"), class: label_class %>
+    <div class="<%= card_class %> space-y-4">
+      <%= f.number_field :amount, required: true, min: 1, max: 1_000_000, step: 1, inputmode: "numeric",
+            placeholder: t(".amount_placeholder"), data: { amount_target: "input" }, class: field_class %>
+      <div>
+        <p class="mb-2 text-[11px] font-medium"><%= t(".presets") %></p>
+        <div class="flex flex-wrap gap-2">
+          <% amount_presets.each do |yen| %>
+            <button type="button" data-action="click->amount#set" data-amount-yen-param="<%= yen %>"
+                    class="rounded-lg bg-gray-400 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-300">
+              <%= number_to_currency(yen, unit: "¥", precision: 0, format: "%u%n") %>
+            </button>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <%= f.label :paid_at, t(".label_date"), class: label_class %>
+    <%= f.date_field :paid_at, required: true, max: Date.current,
+          class: "w-full rounded-lg bg-card px-4 py-3 text-base text-white [color-scheme:dark]" %>
+  </section>
+
+  <div class="flex flex-col items-center gap-4 pt-2">
+    <%= f.submit submit_label,
+          class: "w-32 cursor-pointer rounded-lg bg-primary py-2.5 text-sm font-medium hover:bg-primary/80" %>
+    <%= link_to t(".cancel"), back_path,
+          class: "w-32 rounded-lg bg-gray-400 py-2.5 text-center text-sm font-medium transition-colors hover:bg-gray-300" %>
+  </div>
+<% end %>
