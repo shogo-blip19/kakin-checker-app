@@ -1,0 +1,5 @@
+<% content_for :title, t(".title") %>
+
+<h1 class="mb-6 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
+
+<%= render "form", pay: @pay, submit_label: t(".submit"), back_path: home_path %>

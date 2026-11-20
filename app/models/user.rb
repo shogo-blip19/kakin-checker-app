@@ -5,6 +5,7 @@ class User < ApplicationRecord
     validates :password, presence: true, length: { minimum: 8 }, confirmation: true
     validates :password_confirmation, presence: true
   end
+  has_many :pays, dependent: :destroy # プリセットタイトルを先に削除するとpaysの参照エラーになるのでこの順番にする
   has_many :preset_titles, dependent: :destroy
   validates :preset_titles, length: { is: 3 }, on: :create
   has_one :budget, dependent: :destroy

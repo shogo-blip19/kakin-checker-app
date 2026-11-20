@@ -41,6 +41,44 @@ ja:
       create:
         success: ユーザー登録が完了しました。
         failure: ユーザー登録に失敗しました。入力内容を確認してください。
+  
+  pays:
+    power: "%{amount}課金力"
+    form:
+      label_title: 1.ゲームタイトルを選択
+      label_amount: 2.課金額を入力
+      label_date: 3.日付
+      amount_placeholder: 課金した金額を入力
+      presets: 金額プリセット
+      cancel: キャンセル
+      error_header: "%{count}件のエラーが発生しました。"
+    new:
+      title: 課金を記録
+      heading: 課金を記録
+      submit: 登録
+    edit:
+      title: 課金データ編集
+      heading: 課金データ編集
+      back: 詳細一覧に戻る
+      submit: 更新
+    create:
+      success: 課金を記録しました。
+    update:
+      success: 課金データを更新しました。
+    index:
+      title: 課金履歴
+      heading: "%{year}年%{month}月の記録"
+      back: 履歴選択に戻る
+      list_title: 登録履歴一覧
+      count: "（%{count}件）"
+      total_title: この月の合計（課金力）
+      empty: この月の記録は、まだありません。
+      edit: 編集
+      delete: 削除
+      confirm_delete: この記録を削除しますか？（元に戻せません）
+    destroy:
+      success: 課金データを削除しました。
+  
       
 
   activerecord:
@@ -48,6 +86,7 @@ ja:
       user: ユーザー
       preset_title: プリセットタイトル
       budget: 予算
+      pay: 課金記録
     attributes:
       user:
         email: メールアドレス
@@ -63,15 +102,26 @@ ja:
         game_title: ゲームタイトル
       budget:
         amount: 予算額
+      pay:
+        amount: 課金額
+        paid_at: 課金日
+        preset_title: ゲームタイトル
     errors:
       models:
         user:
           attributes:
             preset_titles:
               wrong_length: は%{count}件にしてください
-    shared:
-    header:
-      logout: ログアウト       # ← この行だけを、既存の shared.header に追加
+          
+        pay:
+          attributes:
+            paid_at:
+              future: は今日以前の日付を入力してください
+            preset_title:
+              invalid: は選択できません
+           
+              
+ 
 
   sessions:
     new:
@@ -94,5 +144,19 @@ ja:
       title: ホーム
       record: 課金を記録
       history: 履歴を見る
+
+  date:
+    formats:
+      history: "%-m/%-d（%a）"
+
      
-      
+  archives:
+    index:
+      title: 課金履歴選択
+      heading: 課金履歴選択
+      year: "%{year}年"
+      previous_year: 前の年へ
+      next_year: 次の年へ
+      list_title: 月別アーカイブ一覧
+      month: "%{year}年 %{month}月"
+      empty: この年の記録は、まだありません。     
