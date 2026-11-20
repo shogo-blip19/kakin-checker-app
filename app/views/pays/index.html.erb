@@ -26,10 +26,17 @@
   <% else %>
     <ul class="space-y-3">
       <% @pays.each do |pay| %>
-        <li class="rounded-lg bg-card px-4 py-3 text-sm leading-6">
-          <p>📆 <%= l(pay.paid_at, format: :history) %></p>
-          <p>🎮 <%= pay.preset_title.game_title %></p>
-          <p>💪 <%= kakin_power(pay.amount) %></p>
+               <li class="flex items-end justify-between gap-3 rounded-lg bg-card px-4 py-3 text-sm leading-6">
+          <div>
+            <p>📆 <%= l(pay.paid_at, format: :history) %></p>
+            <p>🎮 <%= pay.preset_title.game_title %></p>
+            <p>💪 <%= kakin_power(pay.amount) %></p>
+          </div>
+          <div class="flex items-center gap-4 text-[11px] font-medium">
+            <%= link_to edit_pay_path(pay), class: "underline transition-colors hover:text-primary/80" do %>
+              ✏️ <%= t(".edit") %>
+            <% end %>
+          </div>
         </li>
       <% end %>
     </ul>
