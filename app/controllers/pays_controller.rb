@@ -1,6 +1,6 @@
 class PaysController < ApplicationController
   before_action :require_login
-  before_action :set_pay, only: %i[edit update]
+  before_action :set_pay, only: %i[edit update destroy]
 
   def index
     @month = month_from(params[:month])
@@ -36,6 +36,11 @@ class PaysController < ApplicationController
     else
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @pay.destroy
+    redirect_to month_list_path(@pay), notice: t(".success"), status: :see_other
   end
 
   private

@@ -36,6 +36,11 @@
             <%= link_to edit_pay_path(pay), class: "underline transition-colors hover:text-primary/80" do %>
               ✏️ <%= t(".edit") %>
             <% end %>
+            <%= button_to pay_path(pay), method: :delete,
+                  form: { data: { turbo_confirm: t(".confirm_delete") } },
+                  class: "cursor-pointer underline transition-colors hover:text-primary/80" do %>
+              🗑️ <%= t(".delete") %>
+            <% end %>
           </div>
         </li>
       <% end %>
