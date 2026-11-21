@@ -1,5 +1,5 @@
 # Rubyのバージョンを指定（READMEに合わせて3.3系）
-FROM ruby:3.3
+FROM ruby:3.3.14
 
 # OSレベルで必要なパッケージ
 #  build-essential : Gemのコンパイルに必要
