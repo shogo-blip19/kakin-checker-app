@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
+  resource :mypage, only: :show
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"

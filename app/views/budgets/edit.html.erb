@@ -14,7 +14,7 @@
 <h1 class="mb-8 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
 
 <%= render "form", budget: @budget, label_text: t(".label_amount"),
-      submit_label: t(".submit"), back_path: pays_path %>
+      submit_label: t(".submit"), back_path: mypage_path %>
 
 <div class="mx-auto mt-4 flex w-full max-w-xs flex-col items-center">
   <%= button_to t(".delete"), budget_path, method: :delete,

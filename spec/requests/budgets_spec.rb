@@ -59,11 +59,11 @@ RSpec.describe "Budgets", type: :request do
     end
 
     describe "POST /budget" do
-      it "予算が作成され、履歴一覧にリダイレクトされ、完了メッセージが表示されること" do
+      it "予算が作成され、マイページにリダイレクトされ、完了メッセージが表示されること" do
         expect { post budget_path, params: { budget: { amount: "50000" } } }.to change(Budget, :count).by(1)
 
         expect(user.reload.budget.amount).to eq(50_000)
-        expect(response).to redirect_to(pays_path)
+        expect(response).to redirect_to(mypage_path)
         follow_redirect!
         expect(response.body).to include("予算を設定しました。")
       end
@@ -128,11 +128,11 @@ RSpec.describe "Budgets", type: :request do
     describe "PATCH /budget" do
       let!(:budget) { create(:budget, user: user, amount: 50_000) }
 
-      it "更新され、履歴一覧にリダイレクトされ、完了メッセージが表示されること" do
+      it "更新され、マイページにリダイレクトされ、完了メッセージが表示されること" do
         patch budget_path, params: { budget: { amount: "30000" } }
 
         expect(budget.reload.amount).to eq(30_000)
-        expect(response).to redirect_to(pays_path)
+        expect(response).to redirect_to(mypage_path)
         follow_redirect!
         expect(response.body).to include("予算を更新しました。")
       end
@@ -169,14 +169,14 @@ RSpec.describe "Budgets", type: :request do
     end
 
     describe "DELETE /budget" do
-      it "予算が削除され、303で履歴一覧にリダイレクトされ、完了メッセージが表示されること" do
+      it "予算が削除され、303でマイページにリダイレクトされ、完了メッセージが表示されること" do
         create(:budget, user: user)
 
         expect { delete budget_path }.to change(Budget, :count).by(-1)
 
         expect(user.reload.budget).to be_nil
         expect(response).to have_http_status(:see_other)
-        expect(response).to redirect_to(pays_path)
+        expect(response).to redirect_to(mypage_path)
         follow_redirect!
         expect(response.body).to include("予算を削除しました。")
       end
