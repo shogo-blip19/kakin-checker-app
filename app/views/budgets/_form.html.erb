@@ -1,0 +1,29 @@
+<%
+  field_class = "w-full rounded-lg border border-[#d9d9d9] bg-white px-4 py-3 text-base text-black placeholder:text-[#b3b3b3]"
+%>
+
+<% if budget.errors.any? %>
+  <div id="error_explanation" class="mx-auto mb-6 w-full max-w-xs rounded border border-red-400 bg-red-950 p-4 text-sm">
+    <h2 class="mb-2 font-bold"><%= t(".error_header", count: budget.errors.count) %></h2>
+    <ul class="list-disc pl-5">
+      <% budget.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: budget, url: budget_path, class: "mx-auto w-full max-w-xs space-y-6" do |f| %>
+  <div>
+    <%= f.label :amount, label_text, class: "mb-1 block text-sm font-medium" %>
+    <%= f.number_field :amount, required: true, min: 1, max: 1_000_000, step: 1, inputmode: "numeric",
+          autofocus: true, placeholder: t(".amount_placeholder"), class: field_class %>
+  </div>
+
+  <div class="flex flex-col items-center gap-4 pt-2">
+    <%= f.submit submit_label,
+          class: "w-32 cursor-pointer rounded-lg bg-primary py-2.5 text-sm font-medium hover:bg-primary/80" %>
+    <%= link_to t(".cancel"), back_path,
+          class: "w-32 rounded-lg bg-gray-400 py-2.5 text-center text-sm font-medium transition-colors hover:bg-gray-300" %>
+  </div>
+<% end %>
