@@ -7,6 +7,7 @@ class PaysController < ApplicationController
     month_pays = current_user.pays.in_month(@month)
     @pays = month_pays.recent_first.includes(:preset_title)
     @total = month_pays.sum(:amount)
+    @budget = current_user.budget
   end
 
   def new
