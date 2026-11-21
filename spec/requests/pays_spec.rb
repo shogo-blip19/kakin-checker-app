@@ -237,6 +237,23 @@ RSpec.describe "Pays", type: :request do
         second_title.update!(game_title: "スタレ")
       end
 
+      it "予算が未設定のとき、予算を設定するリンクが表示されること" do
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(I18n.t("pays.index.budget_unset"))
+        expect(response.body).to include(%(href="#{new_budget_path}"))
+      end
+
+      it "予算が設定済みのとき、金額と、編集・削除のリンクが表示されること" do
+        create(:budget, user: user, amount: 50_000)
+
+        get pays_path(month: "2025-10")
+
+        expect(response.body).to include(">50,000課金力<")
+        expect(response.body).to include(%(href="#{edit_budget_path}"))
+        expect(response.body).not_to include(%(href="#{new_budget_path}"))
+      end
+
       it "各記録に、確認ダイアログつきの削除ボタンが表示されること" do
         pay = create(:pay, user: user, preset_title: first_title, paid_at: Date.new(2025, 10, 15))
 

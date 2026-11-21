@@ -21,6 +21,20 @@
     
   </h2>
 
+  <h2 class="mb-3 text-base font-medium">🎯 <%= t(".budget_title") %></h2>
+  <div class="mb-8 rounded-lg bg-card px-4 py-4 text-sm">
+    <% if @budget %>
+      <p class="mb-2 text-base"><%= kakin_power(@budget.amount) %></p>
+      <%= link_to t(".budget_edit"), edit_budget_path,
+            class: "text-[11px] font-medium underline transition-colors hover:text-primary/80" %>
+    <% else %>
+      <p class="mb-2"><%= t(".budget_unset") %></p>
+      <%= link_to t(".budget_new"), new_budget_path,
+            class: "text-[11px] font-medium underline transition-colors hover:text-primary/80" %>
+    <% end %>
+  </div>
+
+
   <% if @pays.empty? %>
     <p class="rounded-lg bg-card px-4 py-6 text-center text-sm"><%= t(".empty") %></p>
   <% else %>
