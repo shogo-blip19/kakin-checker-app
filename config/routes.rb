@@ -7,8 +7,11 @@ Rails.application.routes.draw do
 
   resources :archives, only: :index
 
+  resource :budget, only: %i[new create edit update destroy]
+
   get "up" => "rails/health#show", as: :rails_health_check
 
+  resource :mypage, only: :show
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"

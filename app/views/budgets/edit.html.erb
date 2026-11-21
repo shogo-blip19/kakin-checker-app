@@ -1,0 +1,23 @@
+<% content_for :title, t(".title") %>
+<% content_for :hide_nav, "true" %>
+
+<div class="mx-auto w-full max-w-xs">
+  <%= link_to pays_path, class: "mb-2 inline-flex items-center gap-1 text-[11px] font-medium underline" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+         stroke="currentColor" class="size-3" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+    <%= t(".back") %>
+  <% end %>
+</div>
+
+<h1 class="mb-8 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
+
+<%= render "form", budget: @budget, label_text: t(".label_amount"),
+      submit_label: t(".submit"), back_path: mypage_path %>
+
+<div class="mx-auto mt-4 flex w-full max-w-xs flex-col items-center">
+  <%= button_to t(".delete"), budget_path, method: :delete,
+        form: { data: { turbo_confirm: t(".confirm_delete") } },
+        class: "w-32 cursor-pointer rounded-lg bg-red-500 py-2.5 text-sm font-medium transition-colors hover:bg-red-400" %>
+</div>

@@ -4,12 +4,10 @@
           class: "text-base transition-colors hover:text-primary/80" %>
     <nav class="flex items-center gap-3 text-[11px] font-medium">
       <% if logged_in? %>
-        <span title="<%= current_user.email %>"
-              class="flex size-8 items-center justify-center rounded-full bg-white text-sm text-[#4f378a]">
+        <%= link_to mypage_path, title: current_user.email, aria: { label: t(".mypage") },
+              class: "flex size-8 items-center justify-center rounded-full bg-white text-sm text-[#4f378a] transition-opacity hover:opacity-80" do %>
           <%= current_user.email[0].upcase %>
-        </span>
-        <%= button_to t(".logout"), logout_path, method: :delete,
-              class: "cursor-pointer underline transition-colors hover:text-primary/80" %>
+        <% end %>
       <% else %>
         <%= link_to "👤 #{t('.sign_up')}", new_user_path,
               class: "underline transition-colors hover:text-primary/80" %>

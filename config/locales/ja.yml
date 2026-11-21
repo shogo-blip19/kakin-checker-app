@@ -12,7 +12,7 @@ ja:
       logo: 課金チェッカー
       sign_up: 新規登録
       login: ログイン
-      logout: ログアウト
+      mypage: マイページ
     footer:
       terms: 利用規約
       privacy: プライバシーポリシー
@@ -76,6 +76,10 @@ ja:
       edit: 編集
       delete: 削除
       confirm_delete: この記録を削除しますか？（元に戻せません）
+      budget_title: 目標予算
+      budget_unset: 予算は、まだ設定されていません。
+      budget_new: 予算を設定する
+      budget_edit: 編集・削除
     destroy:
       success: 課金データを削除しました。
   
@@ -160,3 +164,47 @@ ja:
       list_title: 月別アーカイブ一覧
       month: "%{year}年 %{month}月"
       empty: この年の記録は、まだありません。     
+  mypages:
+    show:
+      title: マイページ
+      heading: マイページ
+      back: TOPに移動する
+      user_title: ユーザー情報
+      user_edit: メールアドレス / パスワード変更
+      budget_title: 月間目標予算
+      budget_current: 現在の設定
+      budget_amount: "%{amount}/月"
+      budget_unset: 未設定
+      budget_new: 予算を設定する
+      budget_edit: 予算の編集・削除
+      titles_title: 登録ゲームタイトル管理
+      titles_edit: タイトルの編集
+      logout: ログアウト
+
+  budgets:
+    not_set: 予算がまだ設定されていません。
+    already_set: すでに予算が設定されています。
+    form:
+      amount_placeholder: 月に抑えたい予算を入力
+      cancel: キャンセル
+      error_header: "%{count}件のエラーが発生しました。"
+    new:
+      title: 予算の設定
+      heading: 月の予算設定
+      back: マイページに戻る
+      label_amount: 目標月間予算
+      submit: 設定
+    edit:
+      title: 予算の編集・削除
+      heading: 月の予算編集・削除
+      back: マイページに戻る
+      label_amount: 新しい目標月間予算
+      submit: 更新
+      delete: 削除
+      confirm_delete: 予算を削除しますか？（元に戻せません）
+    create:
+      success: 予算を設定しました。
+    update:
+      success: 予算を更新しました。
+    destroy:
+      success: 予算を削除しました。

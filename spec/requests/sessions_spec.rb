@@ -99,11 +99,12 @@ RSpec.describe "Sessions", type: :request do
       expect(response.body).not_to include(%(action="#{logout_path}"))
     end
 
-    it "ログイン中は、ログアウトが表示され、新規登録とログインのリンクは表示されないこと" do
+    it "ログイン中は、マイページへのリンクが表示され、新規登録とログインのリンク、ヘッダーのログアウトは表示されないこと" do
       log_in_as(user)
       get home_path
 
-      expect(response.body).to include(%(action="#{logout_path}"))
+      expect(response.body).to include(%(href="#{mypage_path}"))
+      expect(response.body).not_to include(%(action="#{logout_path}"))
       expect(response.body).not_to include(%(href="#{new_user_path}"))
       expect(response.body).not_to include(%(href="#{login_path}"))
     end
