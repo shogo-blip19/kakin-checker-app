@@ -147,4 +147,71 @@ describe "関連" do
     end
   end
   end
+
+  describe "#over_budget_in_month?" do
+    let(:user) { create(:user) }
+    let(:date) { Date.new(2025, 10, 15) }
+
+    def add_pay(amount, paid_at: date, owner: user)
+      create(:pay, user: owner, preset_title: owner.preset_titles.order(:id).first, amount: amount, paid_at: paid_at)
+    end
+
+    it "予算が未設定なら、合計がどれだけ大きくても、falseであること" do
+      add_pay(999_999)
+
+      expect(user.over_budget_in_month?(date)).to be(false)
+    end
+
+    context "予算が50,000円のとき" do
+      before { create(:budget, user: user, amount: 50_000) }
+
+      it "記録がなければ、falseであること" do
+        expect(user.over_budget_in_month?(date)).to be(false)
+      end
+
+      it "合計が予算より少なければ、falseであること" do
+        add_pay(49_999)
+
+        expect(user.over_budget_in_month?(date)).to be(false)
+      end
+
+      it "合計が予算とちょうど同じなら、falseであること" do
+        add_pay(50_000)
+
+        expect(user.over_budget_in_month?(date)).to be(false)
+      end
+
+      it "合計が予算を1円でも超えたら、trueであること" do
+        add_pay(50_001)
+
+        expect(user.over_budget_in_month?(date)).to be(true)
+      end
+
+      it "複数の記録の合計で判定すること" do
+        add_pay(30_000)
+        add_pay(20_001, paid_at: Date.new(2025, 10, 1))
+
+        expect(user.over_budget_in_month?(date)).to be(true)
+      end
+
+      it "ほかの月の記録は、合計に含めないこと" do
+        add_pay(99_999, paid_at: Date.new(2025, 9, 30))
+        add_pay(88_888, paid_at: Date.new(2025, 11, 1))
+
+        expect(user.over_budget_in_month?(date)).to be(false)
+      end
+
+      it "ほかのユーザーの記録は、合計に含めないこと" do
+        add_pay(70_000, owner: create(:user))
+
+        expect(user.over_budget_in_month?(date)).to be(false)
+      end
+
+      it "日付を指定しないときは、今月で判定すること" do
+        add_pay(60_000, paid_at: Date.current)
+
+        expect(user.over_budget_in_month?).to be(true)
+      end
+    end
+  end
 end

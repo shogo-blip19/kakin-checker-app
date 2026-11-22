@@ -56,6 +56,7 @@ ja:
       title: 課金を記録
       heading: 課金を記録
       submit: 登録
+      over_budget_notice: 今月の目標に届いたようです。ここからは、ゆっくり楽しみましょう。
     edit:
       title: 課金データ編集
       heading: 課金データ編集

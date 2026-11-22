@@ -691,4 +691,128 @@ RSpec.describe "Pays", type: :request do
       end
     end
   end
+
+
+  describe "予算超過の案内（課金登録画面）" do
+    let(:title) { user.preset_titles.order(:id).first }
+    let(:notice_text) { I18n.t("pays.new.over_budget_notice") }
+
+    before { log_in_as(user) }
+
+    def pay_this_month(amount, owner: user, title: self.title)
+      create(:pay, user: owner, preset_title: title, amount: amount, paid_at: Date.current)
+    end
+
+    context "今月の合計が、予算を超えているとき" do
+      before do
+        create(:budget, user: user, amount: 50_000)
+        pay_this_month(60_000)
+      end
+
+      it "課金登録画面に、案内が表示されること" do
+        get new_pay_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(notice_text)
+      end
+
+      it "案内には、金額や課金力が表示されないこと" do
+        get new_pay_path
+
+        expect(response.body).not_to include("60,000")
+        expect(response.body).not_to include("課金力")
+      end
+
+      it "案内が出ていても、課金を登録できること（登録は制限されない）" do
+        valid_params
+
+        expect { post pays_path, params: valid_params }.to change(Pay, :count).by(1)
+      end
+
+      it "登録に失敗して再表示されたときも、案内が表示されること" do
+        post pays_path, params: valid_params.deep_merge(pay: { amount: "0" })
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include(notice_text)
+      end
+
+      it "登録の直後のホーム画面には、案内も、課金力も表示されないこと" do
+        post pays_path, params: valid_params
+        follow_redirect!
+
+        expect(response.body).not_to include(notice_text)
+        expect(response.body).not_to include("課金力")
+      end
+
+      it "課金登録以外の画面（履歴の一覧、編集画面）には、案内が表示されないこと" do
+        pay = pay_this_month(1_000)
+
+        get pays_path
+        expect(response.body).not_to include(notice_text)
+
+        get edit_pay_path(pay)
+        expect(response.body).not_to include(notice_text)
+      end
+    end
+
+    context "案内が表示されない場合" do
+      it "合計が、予算以内なら、表示されないこと" do
+        create(:budget, user: user, amount: 50_000)
+        pay_this_month(49_999)
+
+        get new_pay_path
+
+        expect(response.body).not_to include(notice_text)
+      end
+
+      it "合計が、予算とちょうど同じなら、表示されないこと" do
+        create(:budget, user: user, amount: 50_000)
+        pay_this_month(50_000)
+
+        get new_pay_path
+
+        expect(response.body).not_to include(notice_text)
+      end
+
+      it "予算が未設定なら、合計が大きくても、表示されないこと" do
+        pay_this_month(500_000)
+
+        get new_pay_path
+
+        expect(response.body).not_to include(notice_text)
+      end
+
+      it "先月の記録だけが予算を超えていても、表示されないこと" do
+        create(:budget, user: user, amount: 50_000)
+        create(:pay, user: user, preset_title: title, amount: 99_999,
+                     paid_at: Date.current.beginning_of_month - 1.day)
+
+        get new_pay_path
+
+        expect(response.body).not_to include(notice_text)
+      end
+
+      it "ほかのユーザーの記録は、判定に含まれず、表示されないこと" do
+        create(:budget, user: user, amount: 50_000)
+        pay_this_month(70_000, owner: other_user, title: other_user.preset_titles.first)
+
+        get new_pay_path
+
+        expect(response.body).not_to include(notice_text)
+      end
+    end
+
+    it "予算を超えたあと、予算を上げると、案内が表示されなくなること" do
+      budget = create(:budget, user: user, amount: 50_000)
+      pay_this_month(60_000)
+
+      get new_pay_path
+      expect(response.body).to include(notice_text)
+
+      budget.update!(amount: 100_000)
+
+      get new_pay_path
+      expect(response.body).not_to include(notice_text)
+    end
+  end
 end
