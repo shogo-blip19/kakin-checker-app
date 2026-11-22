@@ -21,9 +21,18 @@
   <h2 class="mb-3 text-base font-medium">🎯 <%= t(".budget_title") %></h2>
   <div class="mb-8 rounded-lg bg-card px-4 py-4 text-sm">
     <% if @budget %>
-      <p class="mb-2 text-base"><%= kakin_power(@budget.amount) %></p>
+      <p class="mb-2 text-[11px] font-medium">
+        <%= t(".progress", total: number_with_delimiter(@total), budget: kakin_power(@budget.amount),
+              percent: @budget.progress_percent(@total)) %>
+      </p>
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="<%= @budget.bar_percent(@total) %>"
+           class="h-2 w-full overflow-hidden rounded-full bg-dark">
+        <div class="h-full rounded-full <%= @budget.over?(@total) ? "bg-amber-400" : "bg-primary" %>"
+             style="width: <%= @budget.bar_percent(@total) %>%"></div>
+      </div>
       <%= link_to t(".budget_edit"), edit_budget_path,
-            class: "text-[11px] font-medium underline transition-colors hover:text-primary/80" %>
+            class: "mt-3 inline-block text-[11px] font-medium underline transition-colors hover:text-primary/80" %>
     <% else %>
       <p class="mb-2"><%= t(".budget_unset") %></p>
       <%= link_to t(".budget_new"), new_budget_path,
