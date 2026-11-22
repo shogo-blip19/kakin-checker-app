@@ -12,4 +12,12 @@ class User < ApplicationRecord
 
   accepts_nested_attributes_for :preset_titles
   accepts_nested_attributes_for :budget, reject_if: :all_blank
+
+
+  # 指定した日の月の合計が、予算を超えているか（予算が未設定なら、false）
+  def over_budget_in_month?(date = Date.current)
+    return false if budget.nil?
+
+    budget.over?(pays.in_month(date).sum(:amount))
+  end
 end

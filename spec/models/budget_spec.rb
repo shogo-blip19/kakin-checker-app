@@ -71,4 +71,62 @@ describe "バリデーションのテスト" do
       end
     end
   end
+
+  describe "進捗の計算" do
+    let(:budget) { build(:budget, amount: 50_000) }
+
+    describe "#progress_percent" do
+      it "合計が0円なら、0%になること" do
+        expect(budget.progress_percent(0)).to eq(0)
+      end
+
+      it "予算の60%なら、60になること" do
+        expect(budget.progress_percent(30_000)).to eq(60)
+      end
+
+      it "予算ちょうどなら、100になること" do
+        expect(budget.progress_percent(50_000)).to eq(100)
+      end
+
+      it "予算を超えたら、100を超えること" do
+        expect(budget.progress_percent(60_000)).to eq(120)
+      end
+
+      it "小数点以下は切り捨てること（予算に1円足りなくても、100%にならない）" do
+        expect(budget.progress_percent(49_999)).to eq(99)
+      end
+
+      it "1円超過でも、100%と表示されること（超過かどうかは、over?で判定する）" do
+        expect(budget.progress_percent(50_001)).to eq(100)
+      end
+    end
+
+  describe "#over?" do
+      it "合計が予算より少なければ、超過ではないこと" do
+        expect(budget.over?(49_999)).to be(false)
+      end
+
+      it "合計が予算とちょうど同じなら、超過ではないこと" do
+        expect(budget.over?(50_000)).to be(false)
+      end
+
+      it "1円でも予算を超えたら、超過であること" do
+        expect(budget.over?(50_001)).to be(true)
+      end
+
+      it "合計が0円なら、超過ではないこと" do
+        expect(budget.over?(0)).to be(false)
+      end
+    end
+
+    describe "#bar_percent" do
+      it "予算以内なら、割合のままであること" do
+        expect(budget.bar_percent(30_000)).to eq(60)
+      end
+
+      it "超過しても、100で止まること" do
+        expect(budget.bar_percent(150_000)).to eq(100)
+      end
+    end
+  end
 end
