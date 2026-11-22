@@ -1,0 +1,56 @@
+<% content_for :title, t(".title") %>
+<% content_for :hide_nav, "true" %>
+
+<%
+  card_class = "rounded-lg bg-card px-4 py-4"
+  heading_class = "mb-3 text-base font-medium"
+  list_class = "space-y-2 pl-2 text-sm font-medium"
+  link_class = "underline transition-colors hover:text-primary/80"
+%>
+
+<div class="mx-auto w-full max-w-sm">
+  <%= link_to home_path, class: "mb-2 inline-flex items-center gap-1 text-[11px] font-medium underline" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+         stroke="currentColor" class="size-3" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+    <%= t(".back") %>
+  <% end %>
+
+  <h1 class="mb-6 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
+
+  <div class="space-y-4">
+    <section class="<%= card_class %>">
+      <h2 class="<%= heading_class %>">👤 <%= t(".user_title") %></h2>
+      <ul class="<%= list_class %>">
+     <li>・<%= link_to t(".user_edit"), edit_account_path, class: link_class %></li>
+        
+      </ul>
+    </section>
+
+    <section class="<%= card_class %>">
+      <h2 class="<%= heading_class %>">🎯 <%= t(".budget_title") %></h2>
+      <ul class="<%= list_class %>">
+        <% if @budget %>
+          <li>・<%= t(".budget_current") %> : <%= t(".budget_amount", amount: kakin_power(@budget.amount)) %></li>
+          <li>・<%= link_to t(".budget_edit"), edit_budget_path, class: link_class %></li>
+        <% else %>
+          <li>・<%= t(".budget_current") %> : <%= t(".budget_unset") %></li>
+          <li>・<%= link_to t(".budget_new"), new_budget_path, class: link_class %></li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="<%= card_class %>">
+      <h2 class="<%= heading_class %>">🎮 <%= t(".titles_title") %></h2>
+      <ul class="<%= list_class %>">
+      <li>・<%= link_to t(".titles_edit"), edit_preset_titles_path, class: link_class %></li>
+      </ul>
+    </section>
+
+    <div class="pt-2">
+      <%= button_to t(".logout"), logout_path, method: :delete,
+            class: "w-full cursor-pointer rounded-lg bg-red-500 py-3 text-base font-medium transition-colors hover:bg-red-400" %>
+    </div>
+  </div>
+</div>

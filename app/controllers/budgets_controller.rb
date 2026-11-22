@@ -52,6 +52,6 @@ class BudgetsController < ApplicationController
 
     # 保存・削除のあと、「戻る」「キャンセル」の行き先（PR②で、マイページに変える）
     def after_path
-      pays_path
+      mypage_path
     end
 end
