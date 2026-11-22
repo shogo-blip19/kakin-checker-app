@@ -1,6 +1,7 @@
 class PaysController < ApplicationController
   before_action :require_login
   before_action :set_pay, only: %i[edit update destroy]
+  before_action :set_over_budget, only: %i[new create]
 
   def index
     @month = month_from(params[:month])
@@ -62,5 +63,10 @@ class PaysController < ApplicationController
     # その記録の日付の月の、履歴一覧のパス
     def month_list_path(pay)
       pays_path(month: pay.paid_at.strftime("%Y-%m"))
+    end
+
+    # 今月の合計が、予算を超えているか（課金登録画面の案内に使う）
+    def set_over_budget
+      @over_budget = current_user.over_budget_in_month?
     end
 end
