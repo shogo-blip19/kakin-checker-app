@@ -31,6 +31,12 @@ RSpec.describe "Mypages", type: :request do
         expect(response.body).to include("ユーザー情報", "月間目標予算", "登録ゲームタイトル管理")
       end
 
+      it "ユーザー情報の編集画面へのリンクが表示されること" do
+        get mypage_path
+
+        expect(response.body).to include(%(href="#{edit_account_path}"))
+      end
+
       it "ログアウトのボタンが表示されること" do
         get mypage_path
 
