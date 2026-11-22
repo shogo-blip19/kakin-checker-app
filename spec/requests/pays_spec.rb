@@ -237,6 +237,104 @@ RSpec.describe "Pays", type: :request do
         second_title.update!(game_title: "スタレ")
       end
 
+      context "予算の進捗" do
+        let!(:budget) { create(:budget, user: user, amount: 50_000) }
+
+        def create_pay(amount, paid_at: Date.new(2025, 10, 15), owner: user)
+          create(:pay, user: owner, preset_title: owner.preset_titles.order(:id).first, amount: amount, paid_at: paid_at)
+        end
+
+        it "合計に応じた、割合と、バーの幅が表示されること" do
+          create_pay(30_000)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 30,000/50,000課金力（60%）")
+          expect(response.body).to include('style="width: 60%"')
+          expect(response.body).to include('role="progressbar"')
+        end
+
+        it "予算以内のとき、バーは緑（超過の色ではない）であること" do
+          create_pay(30_000)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("bg-primary")
+          expect(response.body).not_to include("bg-amber-400")
+        end
+
+        it "予算とちょうど同じ合計は、100%で、超過の色にならないこと" do
+          create_pay(50_000)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("（100%）")
+          expect(response.body).not_to include("bg-amber-400")
+        end
+
+        it "予算を超えたら、120%と表示され、バーは100%で止まり、超過の色になること" do
+          create_pay(60_000)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 60,000/50,000課金力（120%）")
+          expect(response.body).to include('style="width: 100%"')
+          expect(response.body).to include("bg-amber-400")
+        end
+
+        it "記録がない月は、0%で、バーの幅は0であること" do
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 0/50,000課金力（0%）")
+          expect(response.body).to include('style="width: 0%"')
+        end
+
+        it "進捗には、その月の記録だけが含まれること" do
+          create_pay(30_000)
+          create_pay(99_999, paid_at: Date.new(2025, 9, 30))
+          create_pay(88_888, paid_at: Date.new(2025, 11, 1))
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 30,000/50,000課金力（60%）")
+        end
+
+        it "他のユーザーの記録は、進捗に含まれないこと" do
+          create_pay(30_000)
+          create_pay(70_000, owner: other_user)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 30,000/50,000課金力（60%）")
+        end
+
+        it "過去の月も、今の予算と比べて表示されること" do
+          create_pay(10_000, paid_at: Date.new(2024, 1, 10))
+
+          get pays_path(month: "2024-01")
+
+          expect(response.body).to include("進捗 : 10,000/50,000課金力（20%）")
+        end
+
+        it "予算を変更すると、表示される進捗も変わること" do
+          create_pay(30_000)
+          budget.update!(amount: 100_000)
+
+          get pays_path(month: "2025-10")
+
+          expect(response.body).to include("進捗 : 30,000/100,000課金力（30%）")
+        end
+      end
+
+      it "予算が未設定のとき、進捗バーは表示されないこと" do
+        get pays_path(month: "2025-10")
+
+        expect(response.body).not_to include('role="progressbar"')
+        expect(response.body).to include(I18n.t("pays.index.budget_unset"))
+      end
+
+
+
       it "予算が未設定のとき、予算を設定するリンクが表示されること" do
         get pays_path(month: "2025-10")
 
@@ -244,12 +342,12 @@ RSpec.describe "Pays", type: :request do
         expect(response.body).to include(%(href="#{new_budget_path}"))
       end
 
-      it "予算が設定済みのとき、金額と、編集・削除のリンクが表示されること" do
+      it "予算が設定済みのとき、進捗と、編集・削除のリンクが表示されること" do
         create(:budget, user: user, amount: 50_000)
 
         get pays_path(month: "2025-10")
 
-        expect(response.body).to include(">50,000課金力<")
+        expect(response.body).to include("進捗 : 0/50,000課金力（0%）")
         expect(response.body).to include(%(href="#{edit_budget_path}"))
         expect(response.body).not_to include(%(href="#{new_budget_path}"))
       end

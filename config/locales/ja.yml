@@ -80,6 +80,8 @@ ja:
       budget_unset: 予算は、まだ設定されていません。
       budget_new: 予算を設定する
       budget_edit: 編集・削除
+      budget_title: 目標予算との比較
+      progress: "進捗 : %{total}/%{budget}（%{percent}%）"
     destroy:
       success: 課金データを削除しました。
   
