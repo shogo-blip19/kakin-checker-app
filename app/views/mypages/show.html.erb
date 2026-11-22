@@ -44,8 +44,7 @@
     <section class="<%= card_class %>">
       <h2 class="<%= heading_class %>">🎮 <%= t(".titles_title") %></h2>
       <ul class="<%= list_class %>">
-        <%# TODO(ゲームタイトルの編集): 編集画面のパスに置き換える %>
-        <li>・<%= link_to t(".titles_edit"), "#", class: link_class %></li>
+      <li>・<%= link_to t(".titles_edit"), edit_preset_titles_path, class: link_class %></li>
       </ul>
     </section>
 

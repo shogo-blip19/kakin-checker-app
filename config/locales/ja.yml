@@ -228,3 +228,15 @@ ja:
       error_header: "%{count}件のエラーが発生しました。"
     update:
       success: ユーザー情報を更新しました。
+
+  preset_titles:
+    edit:
+      title: ゲームタイトルの編集
+      heading: ゲームタイトルの編集
+      back: マイページに戻る
+      placeholder: ゲームタイトル（20文字以内）
+      submit: 更新
+      cancel: キャンセル
+      error_header: "%{count}件のエラーが発生しました。"
+    update:
+      success: ゲームタイトルを更新しました。

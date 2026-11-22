@@ -1,0 +1,51 @@
+<% content_for :title, t(".title") %>
+<% content_for :hide_nav, "true" %>
+
+<%
+  field_class = "w-full rounded-lg border border-[#d9d9d9] bg-white px-4 py-3 text-base text-black placeholder:text-[#b3b3b3]"
+  circled = %w[① ② ③]
+  number = 0
+%>
+
+<div class="mx-auto w-full max-w-xs">
+  <%= link_to mypage_path, class: "mb-2 inline-flex items-center gap-1 text-[11px] font-medium underline" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+         stroke="currentColor" class="size-3" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
+    <%= t(".back") %>
+  <% end %>
+</div>
+
+<h1 class="mb-8 text-center text-[32px] leading-10"><%= t(".heading") %></h1>
+
+<% if @user.errors.any? %>
+  <div id="error_explanation" class="mx-auto mb-6 w-full max-w-xs rounded border border-red-400 bg-red-950 p-4 text-sm">
+    <h2 class="mb-2 font-bold"><%= t(".error_header", count: @user.errors.count) %></h2>
+    <ul class="list-disc pl-5">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @user, url: preset_titles_path, class: "mx-auto w-full max-w-xs space-y-6" do |f| %>
+  <%= f.fields_for :preset_titles, @user.preset_titles.sort_by(&:id) do |tf| %>
+    <div>
+      <%= tf.label :game_title, "#{PresetTitle.human_attribute_name(:game_title)}#{circled[number]}",
+            class: "mb-1 block text-sm font-medium" %>
+      <div class="rounded-lg bg-card p-3">
+        <%= tf.text_field :game_title, required: true, maxlength: 20, placeholder: t(".placeholder"), class: field_class %>
+      </div>
+    </div>
+    <% number += 1 %>
+  <% end %>
+
+  <div class="flex flex-col items-center gap-4 pt-2">
+    <%= f.submit t(".submit"),
+          class: "w-32 cursor-pointer rounded-lg bg-primary py-2.5 text-sm font-medium hover:bg-primary/80" %>
+    <%= link_to t(".cancel"), mypage_path,
+          class: "w-32 rounded-lg bg-gray-400 py-2.5 text-center text-sm font-medium transition-colors hover:bg-gray-300" %>
+  </div>
+<% end %>

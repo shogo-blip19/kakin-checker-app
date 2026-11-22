@@ -70,6 +70,12 @@ RSpec.describe "Mypages", type: :request do
         expect(response.body).to include("現在の設定 : 未設定")
       end
 
+      it "ゲームタイトルの編集画面へのリンクが表示されること" do
+        get mypage_path
+
+        expect(response.body).to include(%(href="#{edit_preset_titles_path}"))
+      end
+
       it "ログアウトすると、マイページを開けなくなること" do
         delete logout_path
         get mypage_path

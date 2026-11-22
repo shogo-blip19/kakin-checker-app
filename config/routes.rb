@@ -11,16 +11,15 @@ Rails.application.routes.draw do
 
   resource :account, only: %i[edit update]
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  resource :preset_titles, only: %i[edit update]
 
   resource :mypage, only: :show
 
+  get "up" => "rails/health#show", as: :rails_health_check
+
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
-
-
   delete "logout", to: "sessions#destroy"
-
 
   get "home", to: "home#index"
 end
