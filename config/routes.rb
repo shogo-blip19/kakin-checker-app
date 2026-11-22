@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   resource :budget, only: %i[new create edit update destroy]
 
+  resource :account, only: %i[edit update]
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   resource :mypage, only: :show

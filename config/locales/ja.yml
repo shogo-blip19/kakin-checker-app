@@ -208,3 +208,23 @@ ja:
       success: 予算を更新しました。
     destroy:
       success: 予算を削除しました。
+
+  accounts:
+    current_password_invalid: 現在のパスワードが正しくありません。
+    edit:
+      title: ユーザー情報編集
+      heading: ユーザー情報編集
+      back: マイページに戻る
+      label_email: 新しいメールアドレス
+      label_password: 新しいパスワード（変更する場合のみ入力）
+      label_password_confirmation: 新しいパスワード（確認用）
+      label_current_password: 現在のパスワード（変更の確認のため必須）
+      email_placeholder: あなたのメールアドレス
+      password_placeholder: 新しいパスワード（8文字以上）
+      password_confirmation_placeholder: もう一度、新しいパスワードを入力
+      current_password_placeholder: 現在のパスワード
+      submit: 更新
+      cancel: キャンセル
+      error_header: "%{count}件のエラーが発生しました。"
+    update:
+      success: ユーザー情報を更新しました。

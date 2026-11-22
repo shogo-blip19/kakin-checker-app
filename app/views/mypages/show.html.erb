@@ -23,8 +23,8 @@
     <section class="<%= card_class %>">
       <h2 class="<%= heading_class %>">👤 <%= t(".user_title") %></h2>
       <ul class="<%= list_class %>">
-        <%# TODO(ユーザー情報の編集): 編集画面のパスに置き換える %>
-        <li>・<%= link_to t(".user_edit"), "#", class: link_class %></li>
+     <li>・<%= link_to t(".user_edit"), edit_account_path, class: link_class %></li>
+        
       </ul>
     </section>
 
