@@ -74,3 +74,5 @@ group :test do
 end
 
 gem "rails-i18n", "~> 8.1"
+
+gem "bullet", "~> 8.3", groups: [ :development, :test ]

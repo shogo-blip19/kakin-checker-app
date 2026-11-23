@@ -815,4 +815,39 @@ RSpec.describe "Pays", type: :request do
       expect(response.body).not_to include(notice_text)
     end
   end
+
+  describe "N+1問題の防止" do
+    let(:titles) { user.preset_titles.order(:id).to_a }
+
+    before { log_in_as(user) }
+
+    # ゲームタイトルを使い回して、日付を変えながら、記録を作る
+    def add_pays(count, day_offset: 0)
+      count.times do |i|
+        create(:pay, user: user, preset_title: titles[i % titles.size], amount: 1_000,
+                     paid_at: Date.new(2025, 10, 1 + day_offset + i))
+      end
+    end
+
+    it "月の一覧は、記録の件数が増えても、クエリの数が増えないこと" do
+      add_pays(1)
+      get pays_path(month: "2025-10") # 初回のみの処理を済ませるための、ウォームアップ
+
+      queries_for_one = count_queries { get pays_path(month: "2025-10") }
+
+      add_pays(5, day_offset: 1)
+      queries_for_six = count_queries { get pays_path(month: "2025-10") }
+
+      expect(queries_for_six).to eq(queries_for_one)
+    end
+
+    it "月の一覧に、複数のゲームタイトルの記録が並んでも、エラーにならず表示されること（Bulletの検出対象）" do
+      add_pays(6)
+
+      get pays_path(month: "2025-10")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body.scan("🎮").size).to eq(6)
+    end
+  end
 end
